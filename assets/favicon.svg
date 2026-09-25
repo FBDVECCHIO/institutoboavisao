@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#19431F"/>
+      <stop offset="100%" stop-color="#25602D"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A4AA86"/>
+      <stop offset="100%" stop-color="#C2CA9E"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fundo sutil circular para legibilidade perfeita em qualquer aba -->
+  <circle cx="32" cy="32" r="30" fill="#FAFBF9" stroke="#A4AA86" stroke-width="1.5" />
+
+  <!-- Contorno externo do olho estilizado (pálpebras) -->
+  <path d="M 10 32 C 18 18 46 18 54 32 C 46 46 18 46 10 32 Z" 
+        fill="#FFFFFF" 
+        stroke="#19431F" 
+        stroke-width="3" 
+        stroke-linejoin="round"/>
+
+  <!-- Linha de detalhe superior da pálpebra em sage olive -->
+  <path d="M 16 26 C 24 19 40 19 48 26" 
+        fill="none" 
+        stroke="#A4AA86" 
+        stroke-width="1.8" 
+        stroke-linecap="round"/>
+
+  <!-- Íris em verde pinheiro IBV -->
+  <circle cx="32" cy="32" r="11" fill="url(#eyeGrad)"/>
+
+  <!-- Aro interno decorativo da íris -->
+  <circle cx="32" cy="32" r="8" fill="none" stroke="#A4AA86" stroke-width="1.2" opacity="0.85"/>
+
+  <!-- Pupila profunda -->
+  <circle cx="32" cy="32" r="5" fill="#0E2511"/>
+
+  <!-- Brilho / reflexos de luz -->
+  <circle cx="28.5" cy="28.5" r="2.2" fill="#FFFFFF"/>
+  <circle cx="34.5" cy="34.5" r="1.1" fill="#A4AA86"/>
+</svg>
