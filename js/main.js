@@ -233,4 +233,28 @@ document.addEventListener('DOMContentLoaded', () => {
     goToSlide(0);
     startAutoPlay();
   }
+
+  // 6. Botão de Atalho "Subir ao Topo" (#backToTop)
+  const backToTopBtn = document.getElementById('backToTop');
+
+  function handleBackToTopVisibility() {
+    if (!backToTopBtn) return;
+    if (window.scrollY > 300) {
+      backToTopBtn.classList.add('is-visible');
+    } else {
+      backToTopBtn.classList.remove('is-visible');
+    }
+  }
+
+  if (backToTopBtn) {
+    window.addEventListener('scroll', handleBackToTopVisibility, { passive: true });
+    handleBackToTopVisibility();
+
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
 });
