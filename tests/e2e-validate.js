@@ -280,6 +280,9 @@ if (fs.existsSync(INDEX_PATH)) {
   assert(html.includes('id="adminModal"'), 'Modal administrativo (#adminModal) deve existir no documento');
   assert(html.includes('id="adminLoginForm"') && html.includes('id="adminDashboardView"'), 'Admin deve possuir visão de login e visão de dashboard');
   assert(html.includes('id="adminLeadsTable"'), 'Admin deve possuir tabela estruturada para gestão de leads (#adminLeadsTable)');
+  assert(html.includes('id="tabTableView"') && html.includes('id="tabBoardView"'), 'Admin deve possuir alternador de visão com Tabela e Board Kanban');
+  assert(html.includes('<th>Data Consulta</th>'), 'Tabela de leads deve conter coluna "Data Consulta"');
+  assert(html.includes('id="adminBoardContainer"'), 'Admin deve possuir container para o Board Kanban (#adminBoardContainer)');
 }
 
 // -----------------------------------------------------------------
@@ -293,6 +296,9 @@ if (fs.existsSync(CSS_PATH)) {
   assert(css.includes('--color-secondary:') || css.includes('#A4AA86'), 'CSS deve definir a cor de apoio #A4AA86');
   assert(css.includes('@keyframes waPulse') || css.includes('waPulse') || css.includes('pulse'), 'CSS deve incluir animação de pulso para CTA');
   assert(css.includes('@media (max-width:') || css.includes('@media (min-width:'), 'CSS deve conter media queries para responsividade mobile/desktop');
+  assert(css.includes('100vw') && css.includes('100vh'), 'CSS do painel admin deve configurar modal em full screen (100vw x 100vh)');
+  assert(css.includes('.field-data-consulta'), 'CSS deve estilizar o campo de data de consulta (.field-data-consulta)');
+  assert(css.includes('.admin-board-container') && css.includes('.kanban-column'), 'CSS deve conter estilos para o Board Kanban de leads');
 }
 
 if (fs.existsSync(JS_PATH)) {
@@ -300,6 +306,9 @@ if (fs.existsSync(JS_PATH)) {
   assert(js.includes('DOMContentLoaded'), 'JS deve inicializar após DOMContentLoaded');
   assert(js.includes('addEventListener'), 'JS deve registrar interatividade de cliques e scroll');
   assert(js.includes('scrollTo') || js.includes('scrollIntoView') || js.includes('scrollTop'), 'JS deve conter rotina de scroll suave para o topo');
+  assert(js.includes('dataConsulta'), 'JS deve gerenciar o campo dataConsulta nos leads');
+  assert(js.includes('renderKanbanBoard'), 'JS deve conter função renderKanbanBoard para organizar cards por status');
+  assert(js.includes('tabBoardView'), 'JS deve conter alternador de visão para o Board Kanban');
 }
 
 // -----------------------------------------------------------------

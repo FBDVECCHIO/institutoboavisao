@@ -327,6 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
         id: 'lead_' + Date.now(),
         dataHora: new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }),
         timestamp: Date.now(),
+        dataConsulta: '',
         nome: nomeVal,
         telefone: telefoneVal,
         formaContato: formaContatoVal,
@@ -382,9 +383,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const kpiTotalValor = document.getElementById('kpiTotalValor');
   const adminLeadsCountNote = document.getElementById('adminLeadsCountNote');
 
+  // Alternador de Visão (Tabela vs Board)
+  const tabTableView = document.getElementById('tabTableView');
+  const tabBoardView = document.getElementById('tabBoardView');
+  const adminTableViewSection = document.getElementById('adminTableViewSection');
+  const adminBoardViewSection = document.getElementById('adminBoardViewSection');
+  const adminBoardContainer = document.getElementById('adminBoardContainer');
+
   // Credenciais Oficiais
   const ADMIN_USER = 'admin';
   const ADMIN_PASS = 'ibv2026';
+
+  function formatDatePtBr(isoDate) {
+    if (!isoDate) return '';
+    const parts = isoDate.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return isoDate;
+  }
 
   function getLeads() {
     try {
@@ -411,6 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           id: 'lead_demo_1',
           dataHora: '28/09/2026 09:15',
+          dataConsulta: '2026-09-30',
           timestamp: Date.now() - 3600000,
           nome: 'Carlos Eduardo Souza',
           telefone: '(19) 98112-3456',
@@ -424,6 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           id: 'lead_demo_2',
           dataHora: '28/09/2026 08:40',
+          dataConsulta: '2026-10-02',
           timestamp: Date.now() - 7200000,
           nome: 'Mariana Alencar',
           telefone: '(19) 99234-7890',
@@ -483,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (leads.length === 0) {
       adminLeadsTbody.innerHTML = `
         <tr>
-          <td colspan="10" style="text-align: center; padding: 2.5rem 1rem; color: var(--color-text-muted);">
+          <td colspan="11" style="text-align: center; padding: 2.5rem 1rem; color: var(--color-text-muted);">
             Nenhum lead coletado ainda. Aguardando novos agendamentos via formulário.
           </td>
         </tr>
@@ -499,6 +518,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
         <tr data-lead-id="${lead.id}">
           <td class="lead-date">${lead.dataHora || '—'}</td>
+          <td>
+            <input type="date" class="table-input field-data-consulta" value="${lead.dataConsulta || ''}" title="Data agendada da consulta">
+          </td>
           <td class="lead-name">${escapeHtml(lead.nome || '—')}</td>
           <td>
             <div class="lead-phone-wrap">
@@ -544,12 +566,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const leadIndex = leads.findIndex((l) => l.id === leadId);
 
       if (saveBtn && leadIndex !== -1) {
+        const dataConsultaInput = row.querySelector('.field-data-consulta');
         const lojaInput = row.querySelector('.field-loja');
         const osInput = row.querySelector('.field-os');
         const valorInput = row.querySelector('.field-valor');
         const vendedorInput = row.querySelector('.field-vendedor');
         const statusSelect = row.querySelector('.field-status');
 
+        leads[leadIndex].dataConsulta = dataConsultaInput ? dataConsultaInput.value.trim() : '';
         leads[leadIndex].loja = lojaInput ? lojaInput.value.trim() : '';
         leads[leadIndex].os = osInput ? osInput.value.trim() : '';
         leads[leadIndex].valor = valorInput ? valorInput.value.trim() : '';
@@ -558,6 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         saveLeads(leads);
         updateKpis(leads);
+        renderKanbanBoard();
 
         saveBtn.classList.add('is-saved');
         saveBtn.textContent = '✓ Salvo';
@@ -572,8 +597,144 @@ document.addEventListener('DOMContentLoaded', () => {
           leads.splice(leadIndex, 1);
           saveLeads(leads);
           renderLeadsTable();
+          renderKanbanBoard();
         }
       }
+    });
+  }
+
+  // ==========================================================================
+  // Renderização do Board (Kanban por Status)
+  // ==========================================================================
+  function renderKanbanBoard() {
+    if (!adminBoardContainer) return;
+    const leads = getLeads();
+
+    const KANBAN_COLUMNS = [
+      { key: 'Pendente', label: 'Pendente', className: 'kanban-col-pendente' },
+      { key: 'Em Contato', label: 'Em Contato', className: 'kanban-col-em-contato' },
+      { key: 'Agendado', label: 'Agendado', className: 'kanban-col-agendado' },
+      { key: 'Convertido', label: 'Convertido', className: 'kanban-col-convertido' },
+      { key: 'Cancelado', label: 'Cancelado', className: 'kanban-col-cancelado' }
+    ];
+
+    adminBoardContainer.innerHTML = KANBAN_COLUMNS.map((col) => {
+      const colLeads = leads.filter((l) => (l.status || 'Pendente') === col.key);
+
+      const cardsHtml = colLeads.length === 0
+        ? `<div class="kanban-empty-hint">Nenhum lead nesta etapa</div>`
+        : colLeads.map((lead) => {
+            const cleanPhone = (lead.telefone || '').replace(/\D/g, '');
+            const waDirectUrl = `http://api.whatsapp.com/send?1=pt_BR&phone=55${cleanPhone}&text=${encodeURIComponent('Olá ' + lead.nome + ', tudo bem? Aqui é do Instituto Boa Visão!')}`;
+            const channelClass = lead.formaContato === 'Telefone' ? 'channel-telefone' : lead.formaContato === 'E-mail' ? 'channel-email' : 'channel-whatsapp';
+            const formattedConsulta = formatDatePtBr(lead.dataConsulta);
+            const dateBadgeHtml = formattedConsulta
+              ? `<span class="kanban-card-date-badge has-date" title="Data da Consulta Agendada">📅 Consulta: ${formattedConsulta}</span>`
+              : `<span class="kanban-card-date-badge" title="Consulta ainda não agendada">📅 Sem data agendada</span>`;
+
+            return `
+              <div class="kanban-card" data-lead-id="${lead.id}">
+                <div class="kanban-card-top">
+                  <h4 class="kanban-card-name">${escapeHtml(lead.nome || 'Sem nome')}</h4>
+                  <span class="lead-badge-channel ${channelClass}">${lead.formaContato || 'WhatsApp'}</span>
+                </div>
+
+                <div class="kanban-card-phone">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  <a href="tel:${cleanPhone}">${lead.telefone || '—'}</a>
+                  ${cleanPhone ? `<a href="${waDirectUrl}" target="_blank" rel="noopener noreferrer" class="lead-wa-direct-btn" title="Chamar no WhatsApp"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg></a>` : ''}
+                </div>
+
+                ${dateBadgeHtml}
+
+                <div class="kanban-card-grid">
+                  <div class="kanban-field-item">
+                    <span class="kanban-field-label">Loja</span>
+                    <span class="kanban-field-val">${escapeHtml(lead.loja || '—')}</span>
+                  </div>
+                  <div class="kanban-field-item">
+                    <span class="kanban-field-label">OS</span>
+                    <span class="kanban-field-val">${escapeHtml(lead.os || '—')}</span>
+                  </div>
+                  <div class="kanban-field-item">
+                    <span class="kanban-field-label">Valor</span>
+                    <span class="kanban-field-val">${escapeHtml(lead.valor ? 'R$ ' + lead.valor : '—')}</span>
+                  </div>
+                  <div class="kanban-field-item">
+                    <span class="kanban-field-label">Vendedor</span>
+                    <span class="kanban-field-val">${escapeHtml(lead.vendedor || '—')}</span>
+                  </div>
+                </div>
+
+                <div class="kanban-card-bottom">
+                  <select class="kanban-status-select" data-lead-id="${lead.id}" title="Mover status do lead">
+                    <option value="Pendente" ${lead.status === 'Pendente' ? 'selected' : ''}>Status: Pendente</option>
+                    <option value="Em Contato" ${lead.status === 'Em Contato' ? 'selected' : ''}>Status: Em Contato</option>
+                    <option value="Agendado" ${lead.status === 'Agendado' ? 'selected' : ''}>Status: Agendado</option>
+                    <option value="Convertido" ${lead.status === 'Convertido' ? 'selected' : ''}>Status: Convertido</option>
+                    <option value="Cancelado" ${lead.status === 'Cancelado' ? 'selected' : ''}>Status: Cancelado</option>
+                  </select>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+      return `
+        <div class="kanban-column ${col.className}">
+          <div class="kanban-col-header">
+            <div class="kanban-col-title-wrap">
+              <span class="kanban-col-dot"></span>
+              <h3 class="kanban-col-title">${col.label}</h3>
+            </div>
+            <span class="kanban-col-count">${colLeads.length}</span>
+          </div>
+          <div class="kanban-cards-list">
+            ${cardsHtml}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Ouvinte de mudança de status no Board
+  if (adminBoardContainer) {
+    adminBoardContainer.addEventListener('change', (e) => {
+      const select = e.target.closest('.kanban-status-select');
+      if (!select) return;
+      const leadId = select.getAttribute('data-lead-id');
+      const newStatus = select.value;
+      const leads = getLeads();
+      const leadIndex = leads.findIndex((l) => l.id === leadId);
+      if (leadIndex !== -1) {
+        leads[leadIndex].status = newStatus;
+        saveLeads(leads);
+        updateKpis(leads);
+        renderKanbanBoard();
+        renderLeadsTable();
+      }
+    });
+  }
+
+  // Ouvintes de Alternador de Visão (Tabela vs Board)
+  if (tabTableView && tabBoardView) {
+    tabTableView.addEventListener('click', () => {
+      tabTableView.classList.add('is-active');
+      tabTableView.setAttribute('aria-selected', 'true');
+      tabBoardView.classList.remove('is-active');
+      tabBoardView.setAttribute('aria-selected', 'false');
+      if (adminTableViewSection) adminTableViewSection.style.display = 'flex';
+      if (adminBoardViewSection) adminBoardViewSection.style.display = 'none';
+      renderLeadsTable();
+    });
+
+    tabBoardView.addEventListener('click', () => {
+      tabBoardView.classList.add('is-active');
+      tabBoardView.setAttribute('aria-selected', 'true');
+      tabTableView.classList.remove('is-active');
+      tabTableView.setAttribute('aria-selected', 'false');
+      if (adminTableViewSection) adminTableViewSection.style.display = 'none';
+      if (adminBoardViewSection) adminBoardViewSection.style.display = 'flex';
+      renderKanbanBoard();
     });
   }
 
@@ -587,6 +748,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (adminLoginView) adminLoginView.style.display = 'none';
       if (adminDashboardView) adminDashboardView.style.display = 'flex';
       renderLeadsTable();
+      renderKanbanBoard();
     } else {
       if (adminLoginView) adminLoginView.style.display = 'flex';
       if (adminDashboardView) adminDashboardView.style.display = 'none';
@@ -636,6 +798,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (adminLoginView) adminLoginView.style.display = 'none';
         if (adminDashboardView) adminDashboardView.style.display = 'flex';
         renderLeadsTable();
+        renderKanbanBoard();
       } else {
         if (adminLoginError) {
           adminLoginError.textContent = 'Usuário ou senha incorretos.';
@@ -664,10 +827,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const headers = ['ID', 'Data/Hora', 'Nome Completo', 'Telefone', 'Forma de Contato', 'Loja', 'OS', 'Valor (R$)', 'Vendedor', 'Status'];
+      const headers = ['ID', 'Data Cadastro', 'Data Consulta', 'Nome Completo', 'Telefone', 'Forma de Contato', 'Loja', 'OS', 'Valor (R$)', 'Vendedor', 'Status'];
       const rows = leads.map((l) => [
         `"${l.id || ''}"`,
         `"${l.dataHora || ''}"`,
+        `"${l.dataConsulta || ''}"`,
         `"${(l.nome || '').replace(/"/g, '""')}"`,
         `"${(l.telefone || '').replace(/"/g, '""')}"`,
         `"${(l.formaContato || '').replace(/"/g, '""')}"`,
@@ -698,6 +862,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const novoExemplo = {
         id: 'lead_manual_' + Date.now(),
         dataHora: new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }),
+        dataConsulta: '2026-10-05',
         timestamp: Date.now(),
         nome: 'Paciente Exemplo ' + (leads.length + 1),
         telefone: '(19) 98765-4321',
@@ -711,6 +876,7 @@ document.addEventListener('DOMContentLoaded', () => {
       leads.unshift(novoExemplo);
       saveLeads(leads);
       renderLeadsTable();
+      renderKanbanBoard();
     });
   }
 

@@ -1387,6 +1387,24 @@
               <p class="admin-subtitle">Gestão de agendamentos, conversão por loja e vendedor</p>
             </div>
           </div>
+
+          <!-- Alternador de Visão: Tabela vs Board Kanban -->
+          <div class="admin-view-nav" role="tablist" aria-label="Visualização de Leads">
+            <button type="button" class="admin-tab-btn is-active" id="tabTableView" role="tab" aria-selected="true" aria-controls="adminTableViewSection">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+              </svg>
+              <span>Tabela</span>
+            </button>
+            <button type="button" class="admin-tab-btn" id="tabBoardView" role="tab" aria-selected="false" aria-controls="adminBoardViewSection">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/>
+              </svg>
+              <span>Board (Kanban)</span>
+            </button>
+          </div>
+
           <div class="admin-header-actions">
             <button type="button" class="btn btn-sm btn-outline admin-export-btn" id="adminExportCsvBtn" title="Exportar para Excel / CSV">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1419,28 +1437,39 @@
           </div>
         </div>
 
-        <!-- Tabela de Leads -->
-        <div class="admin-table-container">
-          <table class="admin-table" id="adminLeadsTable">
-            <thead>
-              <tr>
-                <th>Data/Hora</th>
-                <th>Nome Completo</th>
-                <th>Telefone / Contato</th>
-                <th>Pref.</th>
-                <th>Loja</th>
-                <th>OS</th>
-                <th>Valor (R$)</th>
-                <th>Vendedor</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="adminLeadsTbody">
-              <!-- Renderizado dinamicamente via JS -->
-            </tbody>
-          </table>
+        <!-- Seção 1: Tabela de Leads -->
+        <div class="admin-view-section" id="adminTableViewSection">
+          <div class="admin-table-container">
+            <table class="admin-table" id="adminLeadsTable">
+              <thead>
+                <tr>
+                  <th>Data Cadastro</th>
+                  <th>Data Consulta</th>
+                  <th>Nome Completo</th>
+                  <th>Telefone / Contato</th>
+                  <th>Pref.</th>
+                  <th>Loja</th>
+                  <th>OS</th>
+                  <th>Valor (R$)</th>
+                  <th>Vendedor</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="adminLeadsTbody">
+                <!-- Renderizado dinamicamente via JS -->
+              </tbody>
+            </table>
+          </div>
         </div>
+
+        <!-- Seção 2: Board de Leads (Kanban por Status) -->
+        <div class="admin-view-section" id="adminBoardViewSection" style="display: none;">
+          <div class="admin-board-container" id="adminBoardContainer">
+            <!-- Renderizado dinamicamente via JS em 5 colunas de status -->
+          </div>
+        </div>
+
         <div class="admin-footer-bar">
           <span class="admin-footer-note" id="adminLeadsCountNote">Nenhum lead encontrado.</span>
           <button type="button" class="btn btn-sm btn-ghost" id="adminResetDemoBtn" title="Inserir leads exemplo para demonstração">
