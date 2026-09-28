@@ -48,27 +48,21 @@ if (indexExists) {
   );
 
   // 4. Headline Principal (H1)
-  const expectedH1 = 'Cuidar da sua visão começa com quem entende. Exame de refração e consulta médica completa em Campinas.';
+  const expectedH1 = 'Cuidar da sua visão começa com quem entende!';
   assert(
     html.includes(expectedH1),
     `Hero deve conter H1 com o texto exato: "${expectedH1}"`
   );
   assert(
-    /<h1[^>]*>[\s\S]*?(refração|visão)[\s\S]*?<\/h1>/i.test(html),
-    'H1 deve destacar refração ou visão no título'
+    /<h1[^>]*>[\s\S]*?(visão|entende)[\s\S]*?<\/h1>/i.test(html),
+    'H1 deve destacar a visão no título'
   );
 
-  // 5. Subtítulo com Proposta de Valor Integral
+  // 5. Subtítulo Atualizado
+  const expectedSubtitle = 'A precisão que seus novos óculos exigem com a segurança de um diagnóstico médico completo.';
   assert(
-    html.includes('óculos') &&
-    html.includes('CBO') &&
-    html.includes('CRM') &&
-    (html.includes('patologia') || html.includes('patologias')),
-    'Subtítulo deve mencionar exame de refração para óculos, médicos CBO/CRM e diagnóstico de patologias'
-  );
-  assert(
-    html.includes('Todos os nossos pacientes são atendidos exclusivamente por oftalmologistas credenciados pelo CBO e CRM'),
-    'Subtítulo deve enfatizar atendimento 100% exclusivo por oftalmologistas credenciados CBO/CRM'
+    html.includes(expectedSubtitle),
+    `Subtítulo deve conter texto exato atualizado: "${expectedSubtitle}"`
   );
 
   // 6. CTAs Duplos
@@ -104,11 +98,26 @@ if (indexExists) {
     'Hero deve destacar badge "Diagnóstico preventivo de patologias"'
   );
 
-  // 8. Elemento Visual / Moldura com Selo CBO
+  // 8. Formulário de Captura de Lead no Hero
   assert(
-    html.includes('Excelência Médica CBO • Diagnóstico Integral • Campinas/SP') ||
-    (html.includes('Excelência Médica CBO') && html.includes('Campinas/SP')),
-    'Hero visual deve conter selo de excelência médica CBO e diagnóstico integral em Campinas/SP'
+    html.includes('id="heroLeadForm"'),
+    'Hero deve conter formulário de captura de lead (#heroLeadForm)'
+  );
+  assert(
+    html.includes('id="leadNome"'),
+    'Hero form deve conter campo Nome Completo (#leadNome)'
+  );
+  assert(
+    html.includes('id="leadTelefone"'),
+    'Hero form deve conter campo Telefone (#leadTelefone)'
+  );
+  assert(
+    html.includes('name="formaContato"'),
+    'Hero form deve conter opções de Forma de Contato (WhatsApp, Telefone, E-mail)'
+  );
+  assert(
+    html.includes('id="heroLeadSubmitBtn"'),
+    'Hero form deve conter botão de envio para WhatsApp (#heroLeadSubmitBtn)'
   );
 }
 

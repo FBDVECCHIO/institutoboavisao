@@ -142,8 +142,24 @@ if (fs.existsSync(INDEX_PATH)) {
     'Deve conter seção Hero (#top / .hero)'
   );
   assert(
-    html.includes('Cuidar da sua visão começa com quem entende. Exame de refração e consulta médica completa em Campinas.'),
-    'Hero deve conter H1 completo com menção ao exame de refração e consulta médica completa em Campinas'
+    html.includes('Cuidar da sua visão começa com quem entende!'),
+    'Hero deve conter H1 com o texto exato "Cuidar da sua visão começa com quem entende!"'
+  );
+  assert(
+    html.includes('A precisão que seus novos óculos exigem com a segurança de um diagnóstico médico completo.'),
+    'Hero deve conter o subtítulo atualizado e objetivo'
+  );
+  assert(
+    html.includes('id="heroLeadForm"'),
+    'Hero deve conter formulário de captura de lead (#heroLeadForm)'
+  );
+  assert(
+    html.includes('id="leadNome"') && html.includes('id="leadTelefone"') && html.includes('name="formaContato"'),
+    'Hero form deve conter campos Nome Completo, Telefone com DDD e Forma de Contato'
+  );
+  assert(
+    html.includes('id="heroLeadSubmitBtn"'),
+    'Hero form deve conter botão de agendamento via WhatsApp (#heroLeadSubmitBtn)'
   );
   assert(
     html.includes('Oftalmologistas credenciados pelo CBO') && html.includes('Registro médico oficial no CRM'),
@@ -252,14 +268,18 @@ if (fs.existsSync(INDEX_PATH)) {
   assert(html.includes('Responsável Técnico') && html.includes('CRM-SP'), 'Footer deve apresentar conformidade ética com Responsável Técnico e CRM-SP');
   assert(html.includes('INSTITUTOBOAVISAO.COM.BR'), 'Footer deve exibir o domínio em caixa alta INSTITUTOBOAVISAO.COM.BR');
   assert(html.includes('2026'), 'Footer deve exibir o copyright atualizado de 2026');
+  assert(html.includes('id="adminGearBtn"'), 'Footer deve conter botão discreto de engrenagem para acesso admin (#adminGearBtn)');
 
   // -----------------------------------------------------------------
-  // 12. Elementos Flutuantes & Interatividade Global
+  // 12. Elementos Flutuantes & Área Administrativa
   // -----------------------------------------------------------------
-  console.log('\n--- 12. Elementos Flutuantes & Scripts ---');
+  console.log('\n--- 12. Elementos Flutuantes & Modal Admin ---');
 
   assert(html.includes('floating-whatsapp') || html.includes('whatsapp-floating') || html.includes('btn-whatsapp-fixed'), 'Botão flutuante do WhatsApp deve existir');
   assert(html.includes('back-to-top') || html.includes('btn-top'), 'Botão de atalho para voltar ao topo deve existir');
+  assert(html.includes('id="adminModal"'), 'Modal administrativo (#adminModal) deve existir no documento');
+  assert(html.includes('id="adminLoginForm"') && html.includes('id="adminDashboardView"'), 'Admin deve possuir visão de login e visão de dashboard');
+  assert(html.includes('id="adminLeadsTable"'), 'Admin deve possuir tabela estruturada para gestão de leads (#adminLeadsTable)');
 }
 
 // -----------------------------------------------------------------

@@ -1149,6 +1149,218 @@ body.menu-open {
   color: var(--color-primary);
 }
 
+/* ==========================================================================
+   Formulário de Captura de Lead no Hero - Agendamento Rápido WhatsApp
+   ========================================================================== */
+.hero-form-card {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(164, 170, 134, 0.25);
+  padding: 2.25rem 2rem;
+  color: var(--color-text);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 5;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.hero-form-card:hover {
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.4);
+}
+
+.hero-form-header {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.hero-form-header .form-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(25, 67, 31, 0.08);
+  color: var(--color-primary);
+  border: 1px solid rgba(25, 67, 31, 0.18);
+  border-radius: var(--radius-full);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.775rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.6rem;
+}
+
+.hero-form-title {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-bottom: 0.4rem;
+  line-height: 1.25;
+}
+
+.hero-form-desc {
+  font-size: 0.885rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.hero-lead-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.hero-lead-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.hero-lead-form .form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.hero-lead-form .required {
+  color: #DC2626;
+}
+
+.hero-lead-form .input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hero-lead-form .input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--color-secondary-dark);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.hero-lead-form .form-input {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.65rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: #FFFFFF;
+  border: 1.5px solid rgba(25, 67, 31, 0.2);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-lead-form .form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(25, 67, 31, 0.12);
+}
+
+.hero-lead-form .form-input:focus + .input-icon,
+.hero-lead-form .input-wrapper:focus-within .input-icon {
+  color: var(--color-primary);
+}
+
+.hero-lead-form .form-input.is-invalid {
+  border-color: #DC2626;
+  background-color: #FEF2F2;
+}
+
+.form-error-msg {
+  font-size: 0.775rem;
+  color: #DC2626;
+  min-height: 1rem;
+  line-height: 1.3;
+}
+
+/* Opções de Forma de Contato (Chips / Cards) */
+.contact-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.contact-method-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.contact-method-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.contact-method-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.65rem 0.4rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid rgba(25, 67, 31, 0.15);
+  background: var(--color-bg-alt);
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.contact-method-option input[type="radio"]:checked + .contact-method-card {
+  background: rgba(25, 67, 31, 0.08);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(25, 67, 31, 0.1);
+}
+
+.contact-method-card:hover {
+  border-color: var(--color-secondary);
+}
+
+/* Botão de Envio do Formulário */
+.btn-hero-submit {
+  width: 100%;
+  padding: 0.95rem 1.5rem;
+  font-size: 1.025rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 0.35rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
+}
+
+.btn-hero-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(37, 211, 102, 0.5);
+}
+
+.form-privacy-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  color: var(--color-text-light);
+  font-size: 0.775rem;
+  margin-top: -0.25rem;
+}
+
 /* Responsividade Específica para a Hero Section */
 @media (max-width: 992px) {
   .hero {
@@ -2779,13 +2991,41 @@ footer.site-footer {
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding-top: 2rem;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .footer-copyright {
   font-size: 0.86rem;
   color: rgba(255, 255, 255, 0.6);
   letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.admin-gear-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: #A4AA86;
+  opacity: 0.28;
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease, transform 0.4s ease, color 0.3s ease, background 0.3s ease;
+}
+
+.admin-gear-btn:hover,
+.admin-gear-btn:focus-visible {
+  opacity: 0.95;
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(60deg);
+  outline: none;
 }
 
 /* ==========================================================================
@@ -2946,3 +3186,493 @@ footer.site-footer {
     gap: 0.5rem;
   }
 }
+
+/* ==========================================================================
+   Área Administrativa IBV (Modal, Login & Gestão de Leads)
+   ========================================================================== */
+.admin-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  padding: 1.5rem;
+}
+
+.admin-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.admin-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 37, 17, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.admin-modal-dialog {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(25, 67, 31, 0.15);
+  width: 100%;
+  max-width: 1180px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: adminScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes adminScaleIn {
+  from {
+    transform: scale(0.95) translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.admin-view {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Modal Header */
+.admin-modal-header {
+  padding: 1.35rem 1.85rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--color-bg);
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.admin-brand-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.admin-subtitle {
+  font-size: 0.825rem;
+  color: var(--color-text-muted);
+  margin: 0.15rem 0 0 0;
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.admin-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.admin-close-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--color-text);
+}
+
+/* Formulário de Login */
+.admin-login-form {
+  padding: 2.5rem 2rem;
+  max-width: 440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.admin-form-group {
+  margin-bottom: 1.25rem;
+}
+
+.admin-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.4rem;
+}
+
+.admin-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(25, 67, 31, 0.12);
+}
+
+.admin-login-error {
+  background: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  color: #B91C1C;
+  font-size: 0.85rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.25rem;
+}
+
+.admin-submit-btn {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+}
+
+/* Dashboard: Métricas */
+.admin-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1.35rem 1.85rem;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-metric-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.metric-label {
+  font-size: 0.785rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 0.03em;
+}
+
+.metric-value {
+  font-family: var(--font-heading);
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1.1;
+}
+
+.text-warning { color: #D97706 !important; }
+.text-success { color: #059669 !important; }
+.text-primary { color: var(--color-primary) !important; }
+
+/* Tabela de Leads */
+.admin-table-container {
+  padding: 1.25rem 1.85rem;
+  overflow-x: auto;
+  flex: 1;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+}
+
+.admin-table th {
+  background: var(--color-bg-alt);
+  color: var(--color-primary-dark);
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.85rem 0.85rem;
+  border-bottom: 2px solid rgba(25, 67, 31, 0.15);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+  color: var(--color-text);
+  font-size: 0.865rem;
+}
+
+.admin-table tr:hover td {
+  background: rgba(240, 244, 236, 0.4);
+}
+
+.lead-date {
+  font-size: 0.785rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.lead-name {
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  min-width: 130px;
+}
+
+.lead-phone-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.lead-phone-link {
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.lead-phone-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.lead-wa-direct-btn {
+  color: #25D366;
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.lead-wa-direct-btn:hover {
+  transform: scale(1.2);
+}
+
+.lead-badge-channel {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.channel-whatsapp {
+  background: rgba(37, 211, 102, 0.12);
+  color: #128C7E;
+}
+
+.channel-telefone {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1E40AF;
+}
+
+.channel-email {
+  background: rgba(139, 92, 246, 0.12);
+  color: #6B21A8;
+}
+
+/* Inputs da Tabela */
+.table-input {
+  width: 100%;
+  min-width: 95px;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.835rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  color: var(--color-text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.table-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(25, 67, 31, 0.15);
+  outline: none;
+}
+
+.table-select {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.835rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.table-actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.btn-table-action {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.785rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-table-save {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.btn-table-save:hover {
+  background: var(--color-primary-light);
+}
+
+.btn-table-save.is-saved {
+  background: #059669;
+}
+
+.btn-table-delete {
+  background: transparent;
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.btn-table-delete:hover {
+  background: #FEF2F2;
+  border-color: #DC2626;
+}
+
+/* Footer do Admin Dashboard */
+.admin-footer-bar {
+  padding: 0.9rem 1.85rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-footer-note {
+  font-size: 0.825rem;
+  color: var(--color-text-muted);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px dashed rgba(25, 67, 31, 0.3);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ghost:hover {
+  background: rgba(25, 67, 31, 0.05);
+  border-style: solid;
+}
+
+.btn-outline-danger {
+  background: transparent;
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-danger:hover {
+  background: #FEF2F2;
+  border-color: #DC2626;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+/* Responsividade do Admin */
+@media (max-width: 840px) {
+  .admin-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 580px) {
+  .admin-modal {
+    padding: 0.5rem;
+  }
+  .admin-modal-dialog {
+    max-height: 96vh;
+    border-radius: var(--radius-md);
+  }
+  .admin-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  .contact-methods-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

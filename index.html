@@ -192,12 +192,12 @@
 
           <!-- Título Principal (H1) -->
           <h1 class="hero-title">
-            Cuidar da sua visão começa com quem entende. Exame de refração e consulta médica completa em Campinas.
+            Cuidar da sua visão começa com quem entende!
           </h1>
 
           <!-- Subtítulo -->
           <p class="hero-subtitle">
-            A precisão que seus novos óculos exigem com a segurança de um diagnóstico médico completo. Todos os nossos pacientes são atendidos exclusivamente por oftalmologistas credenciados pelo CBO e CRM, capacitados para diagnosticar qualquer patologia ocular.
+            A precisão que seus novos óculos exigem com a segurança de um diagnóstico médico completo.
           </p>
 
           <!-- CTAs Duplos -->
@@ -263,80 +263,97 @@
           </div>
         </div>
 
-        <!-- Coluna Visual / Card Médico com Selo CBO -->
+        <!-- Formulário de Captura de Lead (Substitui o card anterior) -->
         <div class="hero-media">
-          <div class="hero-card-wrapper">
-            <!-- Selo Dourado Flutuante de Excelência Médica CBO -->
-            <div class="hero-seal-badge" aria-label="Selo de Excelência Médica CBO">
-              <div class="seal-icon">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="7"/>
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+          <div class="hero-form-card">
+            <!-- Cabeçalho do Card de Formulário -->
+            <div class="hero-form-header">
+              <div class="form-tag">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"/>
                 </svg>
+                <span>Agendamento Rápido</span>
               </div>
-              <div class="seal-content">
-                <strong class="seal-title">Excelência Médica CBO • Diagnóstico Integral • Campinas/SP</strong>
-                <span class="seal-subtitle">Conselho Brasileiro de Oftalmologia & CRM Ativo</span>
-              </div>
+              <h3 class="hero-form-title">Agende sua Consulta</h3>
+              <p class="hero-form-desc">Preencha seus dados para receber o retorno imediato da nossa equipe via WhatsApp:</p>
             </div>
 
-            <!-- Card Médico Principal -->
-            <div class="hero-card">
-              <div class="hero-card-header">
-                <div class="hero-doctor-badge">
-                  <div class="doctor-avatar-icon">
-                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                      <circle cx="12" cy="7" r="4"/>
-                    </svg>
-                  </div>
-                  <div class="doctor-info">
-                    <span class="doctor-tag">Corpo Clínico IBV</span>
-                    <h3 class="doctor-heading">Medicina Oftalmológica Especializada</h3>
-                  </div>
-                </div>
-                <div class="card-status-pill">
-                  <span class="status-indicator"></span>
-                  <span>Plantão de Agendamento</span>
-                </div>
-              </div>
-
-              <div class="hero-card-body">
-                <div class="medical-focus-highlight">
-                  <div class="focus-icon">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                      <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                  </div>
-                  <div class="focus-details">
-                    <h4>Refração Especializada para Óculos</h4>
-                    <p>Precisão para receita definitiva e confortável no seu dia a dia.</p>
-                  </div>
-                </div>
-
-                <div class="hero-exam-tags">
-                  <span class="exam-tag">Tonometria (Pressão Intraocular)</span>
-                  <span class="exam-tag">Biomicroscopia (Lâmpada de Fenda)</span>
-                  <span class="exam-tag">Fundoscopia (Retina e Nervo Óptico)</span>
-                  <span class="exam-tag">Rastreio Preventivo de Patologias</span>
-                </div>
-              </div>
-
-              <div class="hero-card-footer">
-                <div class="patient-rating">
-                  <div class="stars" aria-label="Avaliação 5 estrelas">★★★★★</div>
-                  <span class="rating-text"><strong>5.0</strong> • Avaliações em Campinas</span>
-                </div>
-                <div class="location-badge">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                    <circle cx="12" cy="10" r="3"/>
+            <!-- Formulário de Coleta de Leads -->
+            <form id="heroLeadForm" class="hero-lead-form" novalidate>
+              <div class="form-group">
+                <label for="leadNome" class="form-label">Nome Completo <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
                   </svg>
-                  <span>Campinas/SP</span>
+                  <input type="text" id="leadNome" name="nome" class="form-input" placeholder="Seu nome completo" required autocomplete="name">
+                </div>
+                <span class="form-error-msg" id="leadNomeError"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="leadTelefone" class="form-label">Telefone / WhatsApp (com DDD) <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                  <input type="tel" id="leadTelefone" name="telefone" class="form-input" placeholder="(19) 99999-9999" maxlength="15" required autocomplete="tel">
+                </div>
+                <span class="form-error-msg" id="leadTelefoneError"></span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Forma de Contato Preferida</label>
+                <div class="contact-methods-grid">
+                  <label class="contact-method-option">
+                    <input type="radio" name="formaContato" value="WhatsApp" checked>
+                    <span class="contact-method-card">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                      </svg>
+                      <span>WhatsApp</span>
+                    </span>
+                  </label>
+
+                  <label class="contact-method-option">
+                    <input type="radio" name="formaContato" value="Telefone">
+                    <span class="contact-method-card">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                      </svg>
+                      <span>Telefone</span>
+                    </span>
+                  </label>
+
+                  <label class="contact-method-option">
+                    <input type="radio" name="formaContato" value="E-mail">
+                    <span class="contact-method-card">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                      </svg>
+                      <span>E-mail</span>
+                    </span>
+                  </label>
                 </div>
               </div>
-            </div>
+
+              <button type="submit" class="btn btn-whatsapp btn-hero-submit" id="heroLeadSubmitBtn">
+                <svg class="btn-wa-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                </svg>
+                <span>Agendar Consulta via WhatsApp</span>
+              </button>
+
+              <div class="form-privacy-note">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span>Dados protegidos. Atendimento por médicos CBO & CRM.</span>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -1280,11 +1297,17 @@
         </div>
       </div>
 
-      <!-- Linha Inferior: Copyright -->
+      <!-- Linha Inferior: Copyright e Acesso Administrativo Discreto -->
       <div class="footer-bottom">
         <p class="footer-copyright">
           © 2026 Instituto Boa Visão (IBV) Campinas. Todos os direitos reservados. INSTITUTOBOAVISAO.COM.BR
         </p>
+        <button class="admin-gear-btn" id="adminGearBtn" aria-label="Painel Administrativo" title="Acesso Administrativo (Restrito)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
       </div>
     </div>
   </footer>
@@ -1308,6 +1331,125 @@
       <path d="M18 15l-6-6-6 6"/>
     </svg>
   </button>
+
+  <!-- Modal Administrativo (Gestão de Leads & Contato Ativo) -->
+  <div class="admin-modal" id="adminModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+    <div class="admin-modal-backdrop" id="adminModalBackdrop"></div>
+    <div class="admin-modal-dialog">
+      <!-- 1. Visão de Login (Quando não autenticado) -->
+      <div class="admin-view" id="adminLoginView">
+        <div class="admin-modal-header">
+          <div class="admin-brand">
+            <span class="admin-brand-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </span>
+            <div>
+              <h2 class="admin-title" id="adminModalTitle">Área Administrativa IBV</h2>
+              <p class="admin-subtitle">Acesso restrito para gestão de leads e contato ativo</p>
+            </div>
+          </div>
+          <button type="button" class="admin-close-btn" id="adminCloseBtn" aria-label="Fechar painel">✕</button>
+        </div>
+
+        <form id="adminLoginForm" class="admin-login-form">
+          <div class="admin-form-group">
+            <label for="adminUser" class="admin-label">Usuário</label>
+            <input type="text" id="adminUser" class="admin-input" placeholder="Digite seu usuário" required autocomplete="username">
+          </div>
+          <div class="admin-form-group">
+            <label for="adminPass" class="admin-label">Senha</label>
+            <input type="password" id="adminPass" class="admin-input" placeholder="Digite sua senha" required autocomplete="current-password">
+          </div>
+          <div id="adminLoginError" class="admin-login-error" style="display: none;"></div>
+          <button type="submit" class="btn btn-primary btn-block admin-submit-btn">
+            Entrar no Painel
+          </button>
+        </form>
+      </div>
+
+      <!-- 2. Visão de Dashboard (Quando autenticado) -->
+      <div class="admin-view" id="adminDashboardView" style="display: none;">
+        <div class="admin-modal-header">
+          <div class="admin-brand">
+            <span class="admin-brand-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </span>
+            <div>
+              <h2 class="admin-title">Painel de Leads & Contato Ativo</h2>
+              <p class="admin-subtitle">Gestão de agendamentos, conversão por loja e vendedor</p>
+            </div>
+          </div>
+          <div class="admin-header-actions">
+            <button type="button" class="btn btn-sm btn-outline admin-export-btn" id="adminExportCsvBtn" title="Exportar para Excel / CSV">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Exportar CSV</span>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger admin-logout-btn" id="adminLogoutBtn" title="Encerrar Sessão">
+              Sair
+            </button>
+            <button type="button" class="admin-close-btn" id="adminDashCloseBtn" aria-label="Fechar painel">✕</button>
+          </div>
+        </div>
+
+        <!-- Métricas Rápidas (KPIs) -->
+        <div class="admin-metrics-grid">
+          <div class="admin-metric-card">
+            <span class="metric-label">Total de Leads</span>
+            <span class="metric-value" id="kpiTotalLeads">0</span>
+          </div>
+          <div class="admin-metric-card">
+            <span class="metric-label">Em Contato</span>
+            <span class="metric-value text-warning" id="kpiEmContato">0</span>
+          </div>
+          <div class="admin-metric-card">
+            <span class="metric-label">Convertidos / Concluídos</span>
+            <span class="metric-value text-success" id="kpiConvertidos">0</span>
+          </div>
+          <div class="admin-metric-card">
+            <span class="metric-label">Total em Vendas (R$)</span>
+            <span class="metric-value text-primary" id="kpiTotalValor">R$ 0,00</span>
+          </div>
+        </div>
+
+        <!-- Tabela de Leads -->
+        <div class="admin-table-container">
+          <table class="admin-table" id="adminLeadsTable">
+            <thead>
+              <tr>
+                <th>Data/Hora</th>
+                <th>Nome Completo</th>
+                <th>Telefone / Contato</th>
+                <th>Pref.</th>
+                <th>Loja</th>
+                <th>OS</th>
+                <th>Valor (R$)</th>
+                <th>Vendedor</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="adminLeadsTbody">
+              <!-- Renderizado dinamicamente via JS -->
+            </tbody>
+          </table>
+        </div>
+        <div class="admin-footer-bar">
+          <span class="admin-footer-note" id="adminLeadsCountNote">Nenhum lead encontrado.</span>
+          <button type="button" class="btn btn-sm btn-ghost" id="adminResetDemoBtn" title="Inserir leads exemplo para demonstração">
+            + Adicionar Exemplo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- JavaScript Principal -->
   <script src="js/main.js"></script>

@@ -257,4 +257,467 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  // ==========================================================================
+  // 7. Formulário de Captura de Lead no Hero (WhatsApp)
+  // ==========================================================================
+  function formatPhoneNumber(value) {
+    const digits = (value || '').replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 2) {
+      return digits ? `(${digits}` : '';
+    }
+    if (digits.length <= 6) {
+      return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    }
+    if (digits.length <= 10) {
+      return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    }
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
+  }
+
+  const heroLeadForm = document.getElementById('heroLeadForm');
+  const leadNomeInput = document.getElementById('leadNome');
+  const leadTelefoneInput = document.getElementById('leadTelefone');
+  const leadNomeError = document.getElementById('leadNomeError');
+  const leadTelefoneError = document.getElementById('leadTelefoneError');
+
+  if (leadTelefoneInput) {
+    leadTelefoneInput.addEventListener('input', (e) => {
+      e.target.value = formatPhoneNumber(e.target.value);
+      if (leadTelefoneError) leadTelefoneError.textContent = '';
+      leadTelefoneInput.classList.remove('is-invalid');
+    });
+  }
+
+  if (leadNomeInput) {
+    leadNomeInput.addEventListener('input', () => {
+      if (leadNomeError) leadNomeError.textContent = '';
+      leadNomeInput.classList.remove('is-invalid');
+    });
+  }
+
+  if (heroLeadForm) {
+    heroLeadForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let isValid = true;
+
+      const nomeVal = (leadNomeInput ? leadNomeInput.value : '').trim();
+      const telefoneVal = (leadTelefoneInput ? leadTelefoneInput.value : '').trim();
+      const digits = telefoneVal.replace(/\D/g, '');
+
+      if (!nomeVal || nomeVal.length < 2) {
+        if (leadNomeError) leadNomeError.textContent = 'Por favor, informe seu nome completo.';
+        if (leadNomeInput) leadNomeInput.classList.add('is-invalid');
+        isValid = false;
+      }
+
+      if (!digits || digits.length < 10) {
+        if (leadTelefoneError) leadTelefoneError.textContent = 'Informe um telefone com DDD válido.';
+        if (leadTelefoneInput) leadTelefoneInput.classList.add('is-invalid');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      const selectedForma = heroLeadForm.querySelector('input[name="formaContato"]:checked');
+      const formaContatoVal = selectedForma ? selectedForma.value : 'WhatsApp';
+
+      // 1. Salvar lead no localStorage
+      const newLead = {
+        id: 'lead_' + Date.now(),
+        dataHora: new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }),
+        timestamp: Date.now(),
+        nome: nomeVal,
+        telefone: telefoneVal,
+        formaContato: formaContatoVal,
+        loja: '',
+        os: '',
+        valor: '',
+        vendedor: '',
+        status: 'Pendente'
+      };
+
+      try {
+        const stored = localStorage.getItem('ibv_leads');
+        const leads = stored ? JSON.parse(stored) : [];
+        leads.unshift(newLead);
+        localStorage.setItem('ibv_leads', JSON.stringify(leads));
+      } catch (err) {
+        console.error('Erro ao salvar lead no localStorage:', err);
+      }
+
+      // 2. Montar mensagem oficial e abrir WhatsApp
+      const waMsg = `Olá, gostaria de receber mais informações sobre a consulta. Meu nome é ${nomeVal}, telefone ${telefoneVal} e prefiro contato por ${formaContatoVal}.`;
+      const waUrl = `http://api.whatsapp.com/send?1=pt_BR&phone=5519982036487&text=${encodeURIComponent(waMsg)}`;
+
+      // Resetar formulário
+      heroLeadForm.reset();
+
+      // Abrir WhatsApp em nova aba
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+    });
+  }
+
+  // ==========================================================================
+  // 8. Área Administrativa IBV (Gestão de Leads & Contato Ativo)
+  // ==========================================================================
+  const adminGearBtn = document.getElementById('adminGearBtn');
+  const adminModal = document.getElementById('adminModal');
+  const adminModalBackdrop = document.getElementById('adminModalBackdrop');
+  const adminCloseBtn = document.getElementById('adminCloseBtn');
+  const adminDashCloseBtn = document.getElementById('adminDashCloseBtn');
+  const adminLoginForm = document.getElementById('adminLoginForm');
+  const adminUser = document.getElementById('adminUser');
+  const adminPass = document.getElementById('adminPass');
+  const adminLoginError = document.getElementById('adminLoginError');
+  const adminLoginView = document.getElementById('adminLoginView');
+  const adminDashboardView = document.getElementById('adminDashboardView');
+  const adminLeadsTbody = document.getElementById('adminLeadsTbody');
+  const adminExportCsvBtn = document.getElementById('adminExportCsvBtn');
+  const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+  const adminResetDemoBtn = document.getElementById('adminResetDemoBtn');
+  const kpiTotalLeads = document.getElementById('kpiTotalLeads');
+  const kpiEmContato = document.getElementById('kpiEmContato');
+  const kpiConvertidos = document.getElementById('kpiConvertidos');
+  const kpiTotalValor = document.getElementById('kpiTotalValor');
+  const adminLeadsCountNote = document.getElementById('adminLeadsCountNote');
+
+  // Credenciais Oficiais
+  const ADMIN_USER = 'admin';
+  const ADMIN_PASS = 'ibv2026';
+
+  function getLeads() {
+    try {
+      const stored = localStorage.getItem('ibv_leads');
+      if (stored) return JSON.parse(stored);
+    } catch (e) {
+      console.error(e);
+    }
+    return [];
+  }
+
+  function saveLeads(leads) {
+    try {
+      localStorage.setItem('ibv_leads', JSON.stringify(leads));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function seedDemoLeadsIfEmpty() {
+    let leads = getLeads();
+    if (!leads || leads.length === 0) {
+      leads = [
+        {
+          id: 'lead_demo_1',
+          dataHora: '28/09/2026 09:15',
+          timestamp: Date.now() - 3600000,
+          nome: 'Carlos Eduardo Souza',
+          telefone: '(19) 98112-3456',
+          formaContato: 'WhatsApp',
+          loja: 'Loja Centro',
+          os: '1084',
+          valor: '350,00',
+          vendedor: 'Camila',
+          status: 'Agendado'
+        },
+        {
+          id: 'lead_demo_2',
+          dataHora: '28/09/2026 08:40',
+          timestamp: Date.now() - 7200000,
+          nome: 'Mariana Alencar',
+          telefone: '(19) 99234-7890',
+          formaContato: 'Telefone',
+          loja: 'Loja Barão',
+          os: '1091',
+          valor: '420,00',
+          vendedor: 'Lucas',
+          status: 'Em Contato'
+        }
+      ];
+      saveLeads(leads);
+    }
+    return leads;
+  }
+
+  function updateKpis(leads) {
+    if (!kpiTotalLeads) return;
+    const total = leads.length;
+    let emContatoCount = 0;
+    let convertidosCount = 0;
+    let totalValor = 0;
+
+    leads.forEach((l) => {
+      const st = (l.status || '').toLowerCase();
+      if (st === 'em contato' || st === 'agendado') emContatoCount++;
+      if (st === 'convertido' || st === 'concluído' || st === 'concluido') convertidosCount++;
+      if (l.valor) {
+        const cleanVal = parseFloat(String(l.valor).replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
+        if (!isNaN(cleanVal)) totalValor += cleanVal;
+      }
+    });
+
+    kpiTotalLeads.textContent = total;
+    kpiEmContato.textContent = emContatoCount;
+    kpiConvertidos.textContent = convertidosCount;
+    kpiTotalValor.textContent = totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    if (adminLeadsCountNote) {
+      adminLeadsCountNote.textContent = total === 1 ? '1 lead cadastrado.' : `${total} leads cadastrados.`;
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderLeadsTable() {
+    if (!adminLeadsTbody) return;
+    const leads = getLeads();
+    updateKpis(leads);
+
+    if (leads.length === 0) {
+      adminLeadsTbody.innerHTML = `
+        <tr>
+          <td colspan="10" style="text-align: center; padding: 2.5rem 1rem; color: var(--color-text-muted);">
+            Nenhum lead coletado ainda. Aguardando novos agendamentos via formulário.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    adminLeadsTbody.innerHTML = leads.map((lead) => {
+      const channelClass = lead.formaContato === 'Telefone' ? 'channel-telefone' : lead.formaContato === 'E-mail' ? 'channel-email' : 'channel-whatsapp';
+      const cleanPhone = (lead.telefone || '').replace(/\D/g, '');
+      const waDirectUrl = `http://api.whatsapp.com/send?1=pt_BR&phone=55${cleanPhone}&text=${encodeURIComponent('Olá ' + lead.nome + ', tudo bem? Aqui é do Instituto Boa Visão de Campinas. Recebemos sua solicitação de consulta!')}`;
+
+      return `
+        <tr data-lead-id="${lead.id}">
+          <td class="lead-date">${lead.dataHora || '—'}</td>
+          <td class="lead-name">${escapeHtml(lead.nome || '—')}</td>
+          <td>
+            <div class="lead-phone-wrap">
+              <a href="tel:${cleanPhone}" class="lead-phone-link" title="Ligar para ${lead.telefone}">${lead.telefone || '—'}</a>
+              ${cleanPhone ? `<a href="${waDirectUrl}" target="_blank" rel="noopener noreferrer" class="lead-wa-direct-btn" title="Conversar no WhatsApp"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg></a>` : ''}
+            </div>
+          </td>
+          <td><span class="lead-badge-channel ${channelClass}">${lead.formaContato || 'WhatsApp'}</span></td>
+          <td><input type="text" class="table-input field-loja" value="${escapeHtml(lead.loja || '')}" placeholder="Loja"></td>
+          <td><input type="text" class="table-input field-os" value="${escapeHtml(lead.os || '')}" placeholder="OS"></td>
+          <td><input type="text" class="table-input field-valor" value="${escapeHtml(lead.valor || '')}" placeholder="R$ 0,00"></td>
+          <td><input type="text" class="table-input field-vendedor" value="${escapeHtml(lead.vendedor || '')}" placeholder="Vendedor"></td>
+          <td>
+            <select class="table-select field-status">
+              <option value="Pendente" ${lead.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
+              <option value="Em Contato" ${lead.status === 'Em Contato' ? 'selected' : ''}>Em Contato</option>
+              <option value="Agendado" ${lead.status === 'Agendado' ? 'selected' : ''}>Agendado</option>
+              <option value="Convertido" ${lead.status === 'Convertido' ? 'selected' : ''}>Convertido</option>
+              <option value="Cancelado" ${lead.status === 'Cancelado' ? 'selected' : ''}>Cancelado</option>
+            </select>
+          </td>
+          <td>
+            <div class="table-actions-cell">
+              <button type="button" class="btn-table-action btn-table-save" data-action="save" title="Salvar alterações desta linha">Salvar</button>
+              <button type="button" class="btn-table-action btn-table-delete" data-action="delete" title="Excluir este lead">✕</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Ouvinte de cliques na tabela de leads (Salvar / Excluir)
+  if (adminLeadsTbody) {
+    adminLeadsTbody.addEventListener('click', (e) => {
+      const saveBtn = e.target.closest('button[data-action="save"]');
+      const delBtn = e.target.closest('button[data-action="delete"]');
+      const row = e.target.closest('tr');
+      if (!row) return;
+
+      const leadId = row.getAttribute('data-lead-id');
+      const leads = getLeads();
+      const leadIndex = leads.findIndex((l) => l.id === leadId);
+
+      if (saveBtn && leadIndex !== -1) {
+        const lojaInput = row.querySelector('.field-loja');
+        const osInput = row.querySelector('.field-os');
+        const valorInput = row.querySelector('.field-valor');
+        const vendedorInput = row.querySelector('.field-vendedor');
+        const statusSelect = row.querySelector('.field-status');
+
+        leads[leadIndex].loja = lojaInput ? lojaInput.value.trim() : '';
+        leads[leadIndex].os = osInput ? osInput.value.trim() : '';
+        leads[leadIndex].valor = valorInput ? valorInput.value.trim() : '';
+        leads[leadIndex].vendedor = vendedorInput ? vendedorInput.value.trim() : '';
+        leads[leadIndex].status = statusSelect ? statusSelect.value : 'Pendente';
+
+        saveLeads(leads);
+        updateKpis(leads);
+
+        saveBtn.classList.add('is-saved');
+        saveBtn.textContent = '✓ Salvo';
+        setTimeout(() => {
+          saveBtn.classList.remove('is-saved');
+          saveBtn.textContent = 'Salvar';
+        }, 1800);
+      }
+
+      if (delBtn && leadIndex !== -1) {
+        if (confirm(`Excluir permanentemente o lead "${leads[leadIndex].nome}"?`)) {
+          leads.splice(leadIndex, 1);
+          saveLeads(leads);
+          renderLeadsTable();
+        }
+      }
+    });
+  }
+
+  // Abrir / Fechar Modal
+  function openAdminModal() {
+    if (!adminModal) return;
+    seedDemoLeadsIfEmpty();
+    const isLogged = sessionStorage.getItem('ibv_admin_logged') === 'true';
+
+    if (isLogged) {
+      if (adminLoginView) adminLoginView.style.display = 'none';
+      if (adminDashboardView) adminDashboardView.style.display = 'flex';
+      renderLeadsTable();
+    } else {
+      if (adminLoginView) adminLoginView.style.display = 'flex';
+      if (adminDashboardView) adminDashboardView.style.display = 'none';
+      if (adminLoginError) adminLoginError.style.display = 'none';
+      if (adminUser) adminUser.focus();
+    }
+
+    adminModal.classList.add('is-open');
+    adminModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('menu-open');
+  }
+
+  function closeAdminModal() {
+    if (!adminModal) return;
+    adminModal.classList.remove('is-open');
+    adminModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('menu-open');
+  }
+
+  if (adminGearBtn) {
+    adminGearBtn.addEventListener('click', openAdminModal);
+  }
+
+  if (adminCloseBtn) {
+    adminCloseBtn.addEventListener('click', closeAdminModal);
+  }
+
+  if (adminDashCloseBtn) {
+    adminDashCloseBtn.addEventListener('click', closeAdminModal);
+  }
+
+  if (adminModalBackdrop) {
+    adminModalBackdrop.addEventListener('click', closeAdminModal);
+  }
+
+  // Login Submit
+  if (adminLoginForm) {
+    adminLoginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = adminUser ? adminUser.value.trim() : '';
+      const pass = adminPass ? adminPass.value : '';
+
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        sessionStorage.setItem('ibv_admin_logged', 'true');
+        if (adminLoginError) adminLoginError.style.display = 'none';
+        adminLoginForm.reset();
+        if (adminLoginView) adminLoginView.style.display = 'none';
+        if (adminDashboardView) adminDashboardView.style.display = 'flex';
+        renderLeadsTable();
+      } else {
+        if (adminLoginError) {
+          adminLoginError.textContent = 'Usuário ou senha incorretos.';
+          adminLoginError.style.display = 'block';
+        }
+      }
+    });
+  }
+
+  // Logout
+  if (adminLogoutBtn) {
+    adminLogoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('ibv_admin_logged');
+      if (adminDashboardView) adminDashboardView.style.display = 'none';
+      if (adminLoginView) adminLoginView.style.display = 'flex';
+      if (adminLoginError) adminLoginError.style.display = 'none';
+    });
+  }
+
+  // Exportar CSV (Excel)
+  if (adminExportCsvBtn) {
+    adminExportCsvBtn.addEventListener('click', () => {
+      const leads = getLeads();
+      if (leads.length === 0) {
+        alert('Nenhum lead disponível para exportar.');
+        return;
+      }
+
+      const headers = ['ID', 'Data/Hora', 'Nome Completo', 'Telefone', 'Forma de Contato', 'Loja', 'OS', 'Valor (R$)', 'Vendedor', 'Status'];
+      const rows = leads.map((l) => [
+        `"${l.id || ''}"`,
+        `"${l.dataHora || ''}"`,
+        `"${(l.nome || '').replace(/"/g, '""')}"`,
+        `"${(l.telefone || '').replace(/"/g, '""')}"`,
+        `"${(l.formaContato || '').replace(/"/g, '""')}"`,
+        `"${(l.loja || '').replace(/"/g, '""')}"`,
+        `"${(l.os || '').replace(/"/g, '""')}"`,
+        `"${(l.valor || '').replace(/"/g, '""')}"`,
+        `"${(l.vendedor || '').replace(/"/g, '""')}"`,
+        `"${(l.status || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map(r => r.join(';'))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `leads_ibv_campinas_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // Reset / Adicionar Demo
+  if (adminResetDemoBtn) {
+    adminResetDemoBtn.addEventListener('click', () => {
+      const leads = getLeads();
+      const novoExemplo = {
+        id: 'lead_manual_' + Date.now(),
+        dataHora: new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }),
+        timestamp: Date.now(),
+        nome: 'Paciente Exemplo ' + (leads.length + 1),
+        telefone: '(19) 98765-4321',
+        formaContato: 'WhatsApp',
+        loja: 'Loja Centro',
+        os: String(1100 + leads.length),
+        valor: '280,00',
+        vendedor: 'Atendente',
+        status: 'Pendente'
+      };
+      leads.unshift(novoExemplo);
+      saveLeads(leads);
+      renderLeadsTable();
+    });
+  }
+
+  // Fechar modal no ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && adminModal && adminModal.classList.contains('is-open')) {
+      closeAdminModal();
+    }
+  });
 });
