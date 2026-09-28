@@ -338,14 +338,9 @@ document.addEventListener('DOMContentLoaded', () => {
         status: 'Pendente'
       };
 
-      try {
-        const stored = localStorage.getItem('ibv_leads');
-        const leads = stored ? JSON.parse(stored) : [];
-        leads.unshift(newLead);
-        localStorage.setItem('ibv_leads', JSON.stringify(leads));
-      } catch (err) {
-        console.error('Erro ao salvar lead no localStorage:', err);
-      }
+      const leadsList = getLeads();
+      leadsList.unshift(newLead);
+      saveLeads(leadsList);
 
       // 2. Montar mensagem oficial e abrir WhatsApp
       const waMsg = `Olá, gostaria de receber mais informações sobre a consulta. Meu nome é ${nomeVal}, telefone ${telefoneVal} e prefiro contato por ${formaContatoVal}.`;
@@ -377,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminExportCsvBtn = document.getElementById('adminExportCsvBtn');
   const adminLogoutBtn = document.getElementById('adminLogoutBtn');
   const adminResetDemoBtn = document.getElementById('adminResetDemoBtn');
+  const adminClearAllBtn = document.getElementById('adminClearAllBtn');
   const kpiTotalLeads = document.getElementById('kpiTotalLeads');
   const kpiEmContato = document.getElementById('kpiEmContato');
   const kpiConvertidos = document.getElementById('kpiConvertidos');
@@ -403,61 +399,85 @@ document.addEventListener('DOMContentLoaded', () => {
     return isoDate;
   }
 
+  // ==========================================================================
+  // Banco de Dados Local (LocalStorage com Persistência Definitiva)
+  // ==========================================================================
+  const DB_STORAGE_KEY = 'ibv_leads';
+  const DB_SEEDED_KEY = 'ibv_leads_seeded_v2';
+
   function getLeads() {
     try {
-      const stored = localStorage.getItem('ibv_leads');
-      if (stored) return JSON.parse(stored);
+      const stored = localStorage.getItem(DB_STORAGE_KEY);
+      if (stored !== null) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed;
+      }
     } catch (e) {
-      console.error(e);
+      console.error('Erro ao ler banco de leads:', e);
     }
     return [];
   }
 
   function saveLeads(leads) {
     try {
-      localStorage.setItem('ibv_leads', JSON.stringify(leads));
+      localStorage.setItem(DB_STORAGE_KEY, JSON.stringify(leads));
+      // Marca o banco como inicializado definitivamente para nunca re-injetar leads deletados após F5
+      localStorage.setItem(DB_SEEDED_KEY, 'true');
     } catch (e) {
-      console.error(e);
+      console.error('Erro ao salvar no banco de leads:', e);
     }
   }
 
-  function seedDemoLeadsIfEmpty() {
-    let leads = getLeads();
-    if (!leads || leads.length === 0) {
-      leads = [
-        {
-          id: 'lead_demo_1',
-          dataHora: '28/09/2026 09:15',
-          dataConsulta: '2026-09-30',
-          timestamp: Date.now() - 3600000,
-          nome: 'Carlos Eduardo Souza',
-          telefone: '(19) 98112-3456',
-          formaContato: 'WhatsApp',
-          loja: 'Loja Centro',
-          os: '1084',
-          valor: '350,00',
-          vendedor: 'Camila',
-          status: 'Agendado'
-        },
-        {
-          id: 'lead_demo_2',
-          dataHora: '28/09/2026 08:40',
-          dataConsulta: '2026-10-02',
-          timestamp: Date.now() - 7200000,
-          nome: 'Mariana Alencar',
-          telefone: '(19) 99234-7890',
-          formaContato: 'Telefone',
-          loja: 'Loja Barão',
-          os: '1091',
-          valor: '420,00',
-          vendedor: 'Lucas',
-          status: 'Em Contato'
-        }
-      ];
-      saveLeads(leads);
+  function initDatabaseOnce() {
+    try {
+      const isSeeded = localStorage.getItem(DB_SEEDED_KEY);
+      const storedData = localStorage.getItem(DB_STORAGE_KEY);
+
+      // SÓ popula se for o primeiro acesso absoluto neste navegador
+      if (isSeeded === null && storedData === null) {
+        const demoLeads = [
+          {
+            id: 'lead_demo_1',
+            dataHora: '28/09/2026 09:15',
+            dataConsulta: '2026-09-30',
+            timestamp: Date.now() - 3600000,
+            nome: 'Carlos Eduardo Souza',
+            telefone: '(19) 98112-3456',
+            formaContato: 'WhatsApp',
+            loja: 'Loja Centro',
+            os: '1084',
+            valor: '350,00',
+            vendedor: 'Camila',
+            status: 'Agendado'
+          },
+          {
+            id: 'lead_demo_2',
+            dataHora: '28/09/2026 08:40',
+            dataConsulta: '2026-10-02',
+            timestamp: Date.now() - 7200000,
+            nome: 'Mariana Alencar',
+            telefone: '(19) 99234-7890',
+            formaContato: 'Telefone',
+            loja: 'Loja Barão',
+            os: '1091',
+            valor: '420,00',
+            vendedor: 'Lucas',
+            status: 'Em Contato'
+          }
+        ];
+        localStorage.setItem(DB_STORAGE_KEY, JSON.stringify(demoLeads));
+        localStorage.setItem(DB_SEEDED_KEY, 'true');
+      } else if (isSeeded === null && storedData !== null) {
+        // Se o usuário já tinha dados gravados anteriormente, garante a flag para evitar re-seeding
+        localStorage.setItem(DB_SEEDED_KEY, 'true');
+      }
+    } catch (e) {
+      console.error('Erro na inicialização do banco de leads:', e);
     }
-    return leads;
   }
+
+  // Inicializa o banco de dados uma única vez na carga da página
+  initDatabaseOnce();
 
   function updateKpis(leads) {
     if (!kpiTotalLeads) return;
@@ -674,6 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <option value="Convertido" ${lead.status === 'Convertido' ? 'selected' : ''}>Status: Convertido</option>
                     <option value="Cancelado" ${lead.status === 'Cancelado' ? 'selected' : ''}>Status: Cancelado</option>
                   </select>
+                  <button type="button" class="btn-card-delete" data-action="delete" data-lead-id="${lead.id}" title="Excluir este lead permanentemente">✕</button>
                 </div>
               </div>
             `;
@@ -696,8 +717,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // Ouvinte de mudança de status no Board
+  // Ouvinte de eventos no Board (Mover status e Excluir card)
   if (adminBoardContainer) {
+    adminBoardContainer.addEventListener('click', (e) => {
+      const delBtn = e.target.closest('button[data-action="delete"]');
+      if (!delBtn) return;
+      const leadId = delBtn.getAttribute('data-lead-id');
+      const leads = getLeads();
+      const leadIndex = leads.findIndex((l) => l.id === leadId);
+      if (leadIndex !== -1) {
+        if (confirm(`Excluir permanentemente o lead "${leads[leadIndex].nome}"?`)) {
+          leads.splice(leadIndex, 1);
+          saveLeads(leads);
+          renderLeadsTable();
+          renderKanbanBoard();
+        }
+      }
+    });
+
     adminBoardContainer.addEventListener('change', (e) => {
       const select = e.target.closest('.kanban-status-select');
       if (!select) return;
@@ -741,7 +778,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Abrir / Fechar Modal
   function openAdminModal() {
     if (!adminModal) return;
-    seedDemoLeadsIfEmpty();
+    initDatabaseOnce();
     const isLogged = sessionStorage.getItem('ibv_admin_logged') === 'true';
 
     if (isLogged) {
@@ -877,6 +914,22 @@ document.addEventListener('DOMContentLoaded', () => {
       saveLeads(leads);
       renderLeadsTable();
       renderKanbanBoard();
+    });
+  }
+
+  // Limpar Todos os Leads
+  if (adminClearAllBtn) {
+    adminClearAllBtn.addEventListener('click', () => {
+      const leads = getLeads();
+      if (leads.length === 0) {
+        alert('A base de leads já está vazia.');
+        return;
+      }
+      if (confirm(`Tem certeza que deseja excluir TODOS os ${leads.length} leads cadastrados? Esta ação não pode ser desfeita.`)) {
+        saveLeads([]);
+        renderLeadsTable();
+        renderKanbanBoard();
+      }
     });
   }
 

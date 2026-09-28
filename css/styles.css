@@ -3905,7 +3905,26 @@ footer.site-footer {
   color: var(--color-text);
   cursor: pointer;
   font-weight: 500;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-card-delete {
+  background: transparent;
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 0.22rem 0.45rem;
+  font-size: 0.72rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-card-delete:hover {
+  background: #FEF2F2;
+  border-color: #DC2626;
 }
 
 /* Footer do Admin Dashboard */
@@ -3916,6 +3935,14 @@ footer.site-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
+  gap: 1rem;
+}
+
+.admin-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   flex-shrink: 0;
 }
 
@@ -3928,8 +3955,8 @@ footer.site-footer {
   background: transparent;
   color: var(--color-primary);
   border: 1px dashed rgba(25, 67, 31, 0.3);
-  padding: 0.4rem 0.85rem;
-  font-size: 0.8rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.765rem;
   font-weight: 600;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -3939,6 +3966,24 @@ footer.site-footer {
 .btn-ghost:hover {
   background: rgba(25, 67, 31, 0.05);
   border-style: solid;
+}
+
+.btn-ghost-danger {
+  background: transparent;
+  color: #DC2626;
+  border: 1px dashed rgba(220, 38, 38, 0.35);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.765rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ghost-danger:hover {
+  background: #FEF2F2;
+  border-style: solid;
+  border-color: #DC2626;
 }
 
 .btn-outline-danger {
