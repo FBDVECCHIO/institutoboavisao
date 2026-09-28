@@ -69,8 +69,13 @@ if (indexExists) {
   );
 
   assert(
-    html.includes('(19) 3000-0000'),
-    'Contato deve informar o telefone fixo (19) 3000-0000'
+    html.includes('Rua Barão de Jaguara, 1121') && html.includes('sala 63'),
+    'Contato deve informar o endereço oficial na Rua Barão de Jaguara, 1121 - 6° Andar, sala 63 - Centro'
+  );
+
+  assert(
+    html.includes('maps.google.com') || html.includes('google.com/maps'),
+    'Contato deve incluir link interativo para o Google Maps / rotas'
   );
 
   assert(

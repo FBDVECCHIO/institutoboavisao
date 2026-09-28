@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
@@ -64,9 +64,9 @@ if (indexExists) {
   );
 
   assert(
-    (html.includes('Refração Computadorizada') || html.includes('computadorizada e subjetiva')) &&
-    (html.includes('grau exato') || html.includes('conforto') || html.includes('refinamento subjetivo')),
-    'Passo 2: Refração Computadorizada e Subjetiva com refinamento do médico oftalmologista'
+    (html.includes('Refração Especializada') || html.includes('Refração especializada')) &&
+    (html.includes('grau exato') || html.includes('conforto') || html.includes('precisão')),
+    'Passo 2: Refração Especializada com refinamento do médico oftalmologista'
   );
 
   assert(

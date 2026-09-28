@@ -190,18 +190,11 @@ if (fs.existsSync(INDEX_PATH)) {
 
   assert(html.includes('id="especialidades"'), 'Deve existir elemento com id="especialidades"');
   assert(html.includes('Por que uma consulta com oftalmologista CBO faz toda a diferença?'), 'Especialidades deve conter H2 enfatizando a diferença do especialista CBO');
-
-  const patologiasObrigatorias = [
-    'Glaucoma',
-    'Catarata',
-    'Ceratocone',
-    'Retinopatia',
-    'Olho Seco'
-  ];
-
-  patologiasObrigatorias.forEach(patologia => {
-    assert(html.includes(patologia), `Especialidades deve citar diagnóstico de: "${patologia}"`);
-  });
+  assert(html.includes('Simples Medição Comercial de Grau'), 'Especialidades deve conter alerta sobre medição comercial de grau');
+  assert(html.includes('Consulta com Oftalmologista CBO no IBV'), 'Especialidades deve conter diferencial da consulta médica CBO');
+  assert(html.includes('Refração especializada'), 'Especialidades deve citar Refração especializada');
+  assert(html.includes('biomicroscopia') && html.includes('tonometria') && html.includes('fundoscopia'), 'Especialidades deve citar exames clínicos completos');
+  assert(html.includes('Prescrição médica oficial') && html.includes('CRM'), 'Especialidades deve citar prescrição médica oficial com CRM');
 
   // -----------------------------------------------------------------
   // 7. DOM — Seção Consulta & Exame de Refração
@@ -210,7 +203,7 @@ if (fs.existsSync(INDEX_PATH)) {
 
   assert(html.includes('id="consulta"'), 'Deve existir elemento com id="consulta"');
   assert(html.includes('Anamnese Individualizada'), 'Passo 1 deve ser Anamnese Individualizada');
-  assert(html.includes('Refração Computadorizada e Subjetiva'), 'Passo 2 deve ser Refração Computadorizada e Subjetiva');
+  assert(html.includes('Refração Especializada'), 'Passo 2 deve ser Refração Especializada');
   assert(html.includes('Lâmpada de Fenda'), 'Passo 3 deve incluir Exame com Lâmpada de Fenda');
   assert(html.includes('Prescrição Médica'), 'Passo 4 deve ser Prescrição Médica e Orientações');
 
@@ -244,9 +237,9 @@ if (fs.existsSync(INDEX_PATH)) {
   console.log('\n--- 10. Validação do DOM: Seção Contato ---');
 
   assert(html.includes('id="contato"'), 'Deve existir elemento com id="contato"');
-  assert(html.includes('Região Central') && html.includes('Campinas'), 'Contato deve informar endereço central em Campinas com estacionamento');
-  assert(html.includes('(19) 98203-6487'), 'Contato deve exibir o WhatsApp Oficial formatado (19) 98203-6487');
-  assert(html.includes('(19) 3000-0000'), 'Contato deve exibir o Telefone fixo (19) 3000-0000');
+  assert(html.includes('Rua Barão de Jaguara, 1121') && html.includes('sala 63'), 'Contato deve informar endereço na Rua Barão de Jaguara, 1121 - 6° Andar, sala 63 - Centro');
+  assert(html.includes('maps.google.com') || html.includes('google.com/maps'), 'Contato deve conter link direto do Google Maps para rotas');
+  assert(html.includes('(19) 98203-6487'), 'Contato deve exibir o WhatsApp Oficial formatado (19) 98203-6487 como canal único');
   assert(html.includes('contato@institutoboavisao.com.br'), 'Contato deve exibir o e-mail oficial');
   assert(html.includes('08h às 18h') || html.includes('08h - 18h'), 'Contato deve exibir horários de funcionamento');
 

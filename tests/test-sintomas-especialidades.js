@@ -139,35 +139,30 @@ if (indexExists) {
     'Seção Especialidades deve citar rigor da formação (residência médica / prova de títulos CBO)'
   );
 
-  // Rastreio e Diagnóstico Precoce de Patologias
+  // Diferencial clínico: Simples Medição Comercial vs Consulta Médica CBO no IBV
   assert(
-    html.includes('Glaucoma') &&
-    (html.includes('pressão intraocular') || html.includes('nervo óptico')),
-    'Seção Especialidades deve detalhar detecção de Glaucoma (pressão intraocular e nervo óptico)'
+    html.includes('Simples Medição Comercial de Grau'),
+    'Seção Especialidades deve apresentar alerta sobre simples medição comercial de grau'
   );
   assert(
-    html.includes('Catarata') &&
-    (html.includes('cristalino') || html.includes('opacidade')),
-    'Seção Especialidades deve detalhar detecção de Catarata (opacidade do cristalino)'
+    html.includes('Consulta com Oftalmologista CBO no IBV'),
+    'Seção Especialidades deve apresentar diferencial da consulta médica CBO'
   );
   assert(
-    html.includes('Ceratocone') || html.includes('córnea'),
-    'Seção Especialidades deve detalhar Ceratocone / alterações na córnea'
+    html.includes('Refração especializada'),
+    'Seção Especialidades deve destacar Refração especializada'
   );
   assert(
-    html.includes('Retinopatia') || html.includes('diabética'),
-    'Seção Especialidades deve detalhar detecção de Retinopatia diabética ou hipertensiva'
+    html.includes('biomicroscopia') && html.includes('tonometria') && html.includes('fundoscopia'),
+    'Seção Especialidades deve citar exames clínicos: biomicroscopia, tonometria e fundoscopia'
   );
   assert(
-    html.includes('olho seco') || html.includes('Olho Seco') || html.includes('alergias oculares'),
-    'Seção Especialidades deve detalhar Síndrome do Olho Seco ou alergias oculares'
+    html.includes('doenças silenciosas') || html.includes('doença silenciosa') || html.includes('patologias'),
+    'Seção Especialidades deve destacar o diagnóstico preventivo de doenças silenciosas'
   );
-
-  // Diferencial prático: medição comercial vs consulta médica
   assert(
-    html.includes('medição') &&
-    (html.includes('doenças silenciosas') || html.includes('doença silenciosa') || html.includes('silenciosas')),
-    'Seção Especialidades deve contrapor simples medição comercial com detecção de doenças silenciosas'
+    html.includes('Prescrição médica oficial') && html.includes('CRM'),
+    'Seção Especialidades deve destacar prescrição médica oficial com CRM'
   );
 
   // Validar link de WhatsApp na seção Especialidades
