@@ -379,6 +379,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const kpiTotalValor = document.getElementById('kpiTotalValor');
   const adminLeadsCountNote = document.getElementById('adminLeadsCountNote');
 
+  // Inclusão Manual de Leads (Modal e Formulário)
+  const adminAddLeadBtn = document.getElementById('adminAddLeadBtn');
+  const adminAddLeadModal = document.getElementById('adminAddLeadModal');
+  const adminAddLeadBackdrop = document.getElementById('adminAddLeadBackdrop');
+  const manualLeadCloseBtn = document.getElementById('manualLeadCloseBtn');
+  const manualLeadCancelBtn = document.getElementById('manualLeadCancelBtn');
+  const adminAddLeadForm = document.getElementById('adminAddLeadForm');
+  const manualLeadNome = document.getElementById('manualLeadNome');
+  const manualLeadTelefone = document.getElementById('manualLeadTelefone');
+  const manualLeadCanal = document.getElementById('manualLeadCanal');
+  const manualLeadDataConsulta = document.getElementById('manualLeadDataConsulta');
+  const manualLeadStatus = document.getElementById('manualLeadStatus');
+  const manualLeadLoja = document.getElementById('manualLeadLoja');
+  const manualLeadOs = document.getElementById('manualLeadOs');
+  const manualLeadValor = document.getElementById('manualLeadValor');
+  const manualLeadVendedor = document.getElementById('manualLeadVendedor');
+  const manualLeadNomeError = document.getElementById('manualLeadNomeError');
+  const manualLeadTelefoneError = document.getElementById('manualLeadTelefoneError');
+
   // Alternador de Visão (Tabela vs Board)
   const tabTableView = document.getElementById('tabTableView');
   const tabBoardView = document.getElementById('tabBoardView');
@@ -933,10 +952,139 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Fechar modal no ESC
+  // ==========================================================================
+  // Controle de Inclusão Manual de Leads (Modal & Form)
+  // ==========================================================================
+  function openAddLeadModal() {
+    if (!adminAddLeadModal) return;
+    if (adminAddLeadForm) adminAddLeadForm.reset();
+    if (manualLeadNomeError) manualLeadNomeError.textContent = '';
+    if (manualLeadTelefoneError) manualLeadTelefoneError.textContent = '';
+    if (manualLeadNome) manualLeadNome.classList.remove('is-invalid');
+    if (manualLeadTelefone) manualLeadTelefone.classList.remove('is-invalid');
+
+    // Preenche valores padrão alinhados com o usuário
+    if (manualLeadStatus) manualLeadStatus.value = 'Agendado';
+    if (manualLeadCanal) manualLeadCanal.value = 'WhatsApp';
+
+    adminAddLeadModal.classList.add('is-open');
+    adminAddLeadModal.setAttribute('aria-hidden', 'false');
+    setTimeout(() => {
+      if (manualLeadNome) manualLeadNome.focus();
+    }, 80);
+  }
+
+  function closeAddLeadModal() {
+    if (!adminAddLeadModal) return;
+    adminAddLeadModal.classList.remove('is-open');
+    adminAddLeadModal.setAttribute('aria-hidden', 'true');
+  }
+
+  if (adminAddLeadBtn) {
+    adminAddLeadBtn.addEventListener('click', openAddLeadModal);
+  }
+  if (manualLeadCloseBtn) {
+    manualLeadCloseBtn.addEventListener('click', closeAddLeadModal);
+  }
+  if (manualLeadCancelBtn) {
+    manualLeadCancelBtn.addEventListener('click', closeAddLeadModal);
+  }
+  if (adminAddLeadBackdrop) {
+    adminAddLeadBackdrop.addEventListener('click', closeAddLeadModal);
+  }
+
+  // Máscara de Telefone do Lead Manual
+  if (manualLeadTelefone) {
+    manualLeadTelefone.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length > 11) val = val.slice(0, 11);
+      if (val.length > 10) {
+        e.target.value = `(${val.slice(0, 2)}) ${val.slice(2, 7)}-${val.slice(7)}`;
+      } else if (val.length > 6) {
+        e.target.value = `(${val.slice(0, 2)}) ${val.slice(2, 6)}-${val.slice(6)}`;
+      } else if (val.length > 2) {
+        e.target.value = `(${val.slice(0, 2)}) ${val.slice(2)}`;
+      } else if (val.length > 0) {
+        e.target.value = `(${val}`;
+      } else {
+        e.target.value = '';
+      }
+      if (manualLeadTelefoneError) manualLeadTelefoneError.textContent = '';
+      manualLeadTelefone.classList.remove('is-invalid');
+    });
+  }
+
+  // Envio do Formulário de Lead Manual
+  if (adminAddLeadForm) {
+    adminAddLeadForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let isValid = true;
+
+      const nomeVal = (manualLeadNome ? manualLeadNome.value : '').trim();
+      const telVal = (manualLeadTelefone ? manualLeadTelefone.value : '').trim();
+      const digits = telVal.replace(/\D/g, '');
+
+      if (!nomeVal || nomeVal.length < 2) {
+        if (manualLeadNomeError) manualLeadNomeError.textContent = 'Informe o nome completo do paciente.';
+        if (manualLeadNome) manualLeadNome.classList.add('is-invalid');
+        isValid = false;
+      }
+
+      if (!digits || digits.length < 10) {
+        if (manualLeadTelefoneError) manualLeadTelefoneError.textContent = 'Informe um telefone com DDD válido.';
+        if (manualLeadTelefone) manualLeadTelefone.classList.add('is-invalid');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      const newLead = {
+        id: 'lead_manual_' + Date.now(),
+        dataHora: new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }),
+        dataConsulta: manualLeadDataConsulta ? manualLeadDataConsulta.value.trim() : '',
+        timestamp: Date.now(),
+        nome: nomeVal,
+        telefone: telVal,
+        formaContato: manualLeadCanal ? manualLeadCanal.value : 'WhatsApp',
+        loja: manualLeadLoja ? manualLeadLoja.value.trim() : '',
+        os: manualLeadOs ? manualLeadOs.value.trim() : '',
+        valor: manualLeadValor ? manualLeadValor.value.trim() : '',
+        vendedor: manualLeadVendedor ? manualLeadVendedor.value.trim() : '',
+        status: manualLeadStatus ? manualLeadStatus.value : 'Agendado'
+      };
+
+      const leads = getLeads();
+      leads.unshift(newLead);
+      saveLeads(leads);
+      renderLeadsTable();
+      renderKanbanBoard();
+      updateKpis(leads);
+
+      closeAddLeadModal();
+
+      // Feedback temporário no botão + Novo Lead
+      if (adminAddLeadBtn) {
+        const originalHtml = adminAddLeadBtn.innerHTML;
+        adminAddLeadBtn.innerHTML = '<span>✓ Lead Cadastrado!</span>';
+        adminAddLeadBtn.style.backgroundColor = '#15803D';
+        setTimeout(() => {
+          adminAddLeadBtn.innerHTML = originalHtml;
+          adminAddLeadBtn.style.backgroundColor = '';
+        }, 1800);
+      }
+    });
+  }
+
+  // Fechar modais no ESC
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && adminModal && adminModal.classList.contains('is-open')) {
-      closeAdminModal();
+    if (e.key === 'Escape') {
+      if (adminAddLeadModal && adminAddLeadModal.classList.contains('is-open')) {
+        closeAddLeadModal();
+        return;
+      }
+      if (adminModal && adminModal.classList.contains('is-open')) {
+        closeAdminModal();
+      }
     }
   });
 });

@@ -24,7 +24,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Folha de Estilos Principal -->
-  <link rel="stylesheet" href="css/styles.css?v=20260928-v3">
+  <link rel="stylesheet" href="css/styles.css?v=20261005-v1">
 </head>
 <body>
 
@@ -1406,6 +1406,13 @@
           </div>
 
           <div class="admin-header-actions">
+            <button type="button" class="btn btn-sm btn-primary admin-add-lead-btn" id="adminAddLeadBtn" title="Cadastrar novo lead manualmente">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>+ Novo Lead</span>
+            </button>
             <button type="button" class="btn btn-sm btn-outline admin-export-btn" id="adminExportCsvBtn" title="Exportar para Excel / CSV">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               <span>Exportar CSV</span>
@@ -1494,11 +1501,116 @@
             </button>
           </div>
         </div>
+
+        <!-- Modal de Inclusão Manual de Lead (Paciente WhatsApp/Anúncios) -->
+        <div class="admin-submodal" id="adminAddLeadModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="adminAddLeadModalTitle">
+          <div class="admin-submodal-backdrop" id="adminAddLeadBackdrop"></div>
+          <div class="admin-submodal-dialog">
+            <div class="admin-submodal-header">
+              <div class="admin-submodal-title-wrap">
+                <div class="admin-submodal-icon">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <line x1="19" y1="8" x2="19" y2="14"/>
+                    <line x1="22" y1="11" x2="16" y2="11"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="admin-submodal-title" id="adminAddLeadModalTitle">Incluir Lead Manualmente</h3>
+                  <p class="admin-submodal-desc">Cadastre pacientes que vieram por anúncios de WhatsApp ou contato direto para consulta médica</p>
+                </div>
+              </div>
+              <button type="button" class="admin-submodal-close" id="manualLeadCloseBtn" aria-label="Fechar formulário">✕</button>
+            </div>
+
+            <form id="adminAddLeadForm" class="admin-submodal-form" novalidate>
+              <div class="admin-form-grid">
+                <!-- Nome Completo (Obrigatório) -->
+                <div class="admin-form-group col-span-2">
+                  <label for="manualLeadNome" class="admin-form-label">Nome Completo do Paciente <span class="required">*</span></label>
+                  <input type="text" id="manualLeadNome" class="admin-form-input" placeholder="Ex: Carlos Eduardo da Silva" required autocomplete="off">
+                  <span class="admin-form-error" id="manualLeadNomeError"></span>
+                </div>
+
+                <!-- Telefone / WhatsApp com DDD (Obrigatório) -->
+                <div class="admin-form-group">
+                  <label for="manualLeadTelefone" class="admin-form-label">Telefone / WhatsApp com DDD <span class="required">*</span></label>
+                  <input type="tel" id="manualLeadTelefone" class="admin-form-input" placeholder="(19) 99999-9999" maxlength="15" required autocomplete="off">
+                  <span class="admin-form-error" id="manualLeadTelefoneError"></span>
+                </div>
+
+                <!-- Canal de Origem -->
+                <div class="admin-form-group">
+                  <label for="manualLeadCanal" class="admin-form-label">Canal / Origem</label>
+                  <select id="manualLeadCanal" class="admin-form-select">
+                    <option value="WhatsApp" selected>WhatsApp (Anúncios)</option>
+                    <option value="Telefone">Telefone / Ligação</option>
+                    <option value="E-mail">E-mail</option>
+                    <option value="Presencial">Presencial / Recepção</option>
+                  </select>
+                </div>
+
+                <!-- Data Agendada da Consulta -->
+                <div class="admin-form-group">
+                  <label for="manualLeadDataConsulta" class="admin-form-label">Data da Consulta</label>
+                  <input type="date" id="manualLeadDataConsulta" class="admin-form-input">
+                </div>
+
+                <!-- Status Inicial -->
+                <div class="admin-form-group">
+                  <label for="manualLeadStatus" class="admin-form-label">Status Inicial</label>
+                  <select id="manualLeadStatus" class="admin-form-select">
+                    <option value="Agendado" selected>Agendado (Padrão)</option>
+                    <option value="Em Contato">Em Contato</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Convertido">Convertido</option>
+                    <option value="Cancelado">Cancelado</option>
+                  </select>
+                </div>
+
+                <!-- Loja -->
+                <div class="admin-form-group">
+                  <label for="manualLeadLoja" class="admin-form-label">Loja / Unidade</label>
+                  <input type="text" id="manualLeadLoja" class="admin-form-input" placeholder="Ex: Loja Centro">
+                </div>
+
+                <!-- OS -->
+                <div class="admin-form-group">
+                  <label for="manualLeadOs" class="admin-form-label">Nº da OS</label>
+                  <input type="text" id="manualLeadOs" class="admin-form-input" placeholder="Ex: 1095">
+                </div>
+
+                <!-- Valor (R$) -->
+                <div class="admin-form-group">
+                  <label for="manualLeadValor" class="admin-form-label">Valor (R$)</label>
+                  <input type="text" id="manualLeadValor" class="admin-form-input" placeholder="Ex: 350,00">
+                </div>
+
+                <!-- Vendedor / Atendente -->
+                <div class="admin-form-group">
+                  <label for="manualLeadVendedor" class="admin-form-label">Atendente / Vendedor</label>
+                  <input type="text" id="manualLeadVendedor" class="admin-form-input" placeholder="Ex: Camila">
+                </div>
+              </div>
+
+              <div class="admin-submodal-footer">
+                <button type="button" class="btn btn-sm btn-outline" id="manualLeadCancelBtn">Cancelar</button>
+                <button type="submit" class="btn btn-sm btn-primary" id="manualLeadSubmitBtn">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>Salvar Lead</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- JavaScript Principal -->
-  <script src="js/main.js?v=20260928-v3"></script>
+  <script src="js/main.js?v=20261005-v1"></script>
 </body>
 </html>
