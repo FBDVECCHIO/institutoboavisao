@@ -24,7 +24,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Folha de Estilos Principal -->
-  <link rel="stylesheet" href="css/styles.css?v=20261005-v1">
+  <link rel="stylesheet" href="css/styles.css?v=20261005-v2">
 </head>
 <body>
 
@@ -1403,6 +1403,15 @@
               </svg>
               <span>Board (Kanban)</span>
             </button>
+            <button type="button" class="admin-tab-btn" id="tabCadastrosView" role="tab" aria-selected="false" aria-controls="adminCadastrosViewSection" title="Gerenciar Lojas e Vendedores">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <span>Lojas & Vendedores</span>
+            </button>
           </div>
 
           <div class="admin-header-actions">
@@ -1490,6 +1499,78 @@
           </div>
         </div>
 
+        <!-- Seção 3: Cadastros de Lojas e Vendedores -->
+        <div class="admin-view-section" id="adminCadastrosViewSection" style="display: none;">
+          <div class="admin-cadastros-container">
+            <div class="admin-cadastros-header">
+              <div>
+                <h3 class="admin-cadastros-title">Gestão de Lojas e Vendedores</h3>
+                <p class="admin-cadastros-desc">Cadastre, altere ou exclua unidades e atendentes para alimentar automaticamente as colunas dos leads.</p>
+              </div>
+            </div>
+
+            <div class="admin-cadastros-grid">
+              <!-- Módulo 1: Gestão de Lojas -->
+              <div class="admin-cadastro-card">
+                <div class="admin-cadastro-card-header">
+                  <div class="admin-cadastro-card-title-wrap">
+                    <span class="admin-cadastro-badge-icon">🏬</span>
+                    <div>
+                      <h4 class="admin-cadastro-card-title">Lojas / Unidades</h4>
+                      <span class="admin-cadastro-card-count" id="adminLojasCount">0 lojas cadastradas</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Formulário de Nova Loja -->
+                <form id="formAddLoja" class="admin-cadastro-add-form" novalidate>
+                  <input type="text" id="novaLojaNome" class="admin-form-input" placeholder="Nome da Loja (ex: Loja Cambuí)" required autocomplete="off">
+                  <button type="submit" class="btn btn-sm btn-primary" id="btnAddLoja">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>+ Adicionar</span>
+                  </button>
+                </form>
+
+                <!-- Lista de Lojas -->
+                <div class="admin-cadastro-list-wrap">
+                  <ul class="admin-cadastro-list" id="adminLojasList">
+                    <!-- Renderizado dinamicamente via JS -->
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Módulo 2: Gestão de Vendedores -->
+              <div class="admin-cadastro-card">
+                <div class="admin-cadastro-card-header">
+                  <div class="admin-cadastro-card-title-wrap">
+                    <span class="admin-cadastro-badge-icon">👤</span>
+                    <div>
+                      <h4 class="admin-cadastro-card-title">Vendedores / Atendentes</h4>
+                      <span class="admin-cadastro-card-count" id="adminVendedoresCount">0 vendedores cadastrados</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Formulário de Novo Vendedor -->
+                <form id="formAddVendedor" class="admin-cadastro-add-form" novalidate>
+                  <input type="text" id="novoVendedorNome" class="admin-form-input" placeholder="Nome do Vendedor (ex: Fernanda)" required autocomplete="off">
+                  <button type="submit" class="btn btn-sm btn-primary" id="btnAddVendedor">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>+ Adicionar</span>
+                  </button>
+                </form>
+
+                <!-- Lista de Vendedores -->
+                <div class="admin-cadastro-list-wrap">
+                  <ul class="admin-cadastro-list" id="adminVendedoresList">
+                    <!-- Renderizado dinamicamente via JS -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="admin-footer-bar">
           <span class="admin-footer-note" id="adminLeadsCountNote">Nenhum lead encontrado.</span>
           <div class="admin-footer-actions">
@@ -1572,7 +1653,9 @@
                 <!-- Loja -->
                 <div class="admin-form-group">
                   <label for="manualLeadLoja" class="admin-form-label">Loja / Unidade</label>
-                  <input type="text" id="manualLeadLoja" class="admin-form-input" placeholder="Ex: Loja Centro">
+                  <select id="manualLeadLoja" class="admin-form-select">
+                    <option value="">Selecione a loja...</option>
+                  </select>
                 </div>
 
                 <!-- OS -->
@@ -1590,7 +1673,9 @@
                 <!-- Vendedor / Atendente -->
                 <div class="admin-form-group">
                   <label for="manualLeadVendedor" class="admin-form-label">Atendente / Vendedor</label>
-                  <input type="text" id="manualLeadVendedor" class="admin-form-input" placeholder="Ex: Camila">
+                  <select id="manualLeadVendedor" class="admin-form-select">
+                    <option value="">Selecione o vendedor...</option>
+                  </select>
                 </div>
               </div>
 
@@ -1611,6 +1696,6 @@
   </div>
 
   <!-- JavaScript Principal -->
-  <script src="js/main.js?v=20261005-v1"></script>
+  <script src="js/main.js?v=20261005-v2"></script>
 </body>
 </html>

@@ -398,12 +398,74 @@ document.addEventListener('DOMContentLoaded', () => {
   const manualLeadNomeError = document.getElementById('manualLeadNomeError');
   const manualLeadTelefoneError = document.getElementById('manualLeadTelefoneError');
 
-  // Alternador de Visão (Tabela vs Board)
+  // Alternador de Visão (Tabela vs Board vs Cadastros)
   const tabTableView = document.getElementById('tabTableView');
   const tabBoardView = document.getElementById('tabBoardView');
+  const tabCadastrosView = document.getElementById('tabCadastrosView');
   const adminTableViewSection = document.getElementById('adminTableViewSection');
   const adminBoardViewSection = document.getElementById('adminBoardViewSection');
+  const adminCadastrosViewSection = document.getElementById('adminCadastrosViewSection');
   const adminBoardContainer = document.getElementById('adminBoardContainer');
+
+  // Gestão de Lojas e Vendedores
+  const formAddLoja = document.getElementById('formAddLoja');
+  const novaLojaNome = document.getElementById('novaLojaNome');
+  const adminLojasList = document.getElementById('adminLojasList');
+  const adminLojasCount = document.getElementById('adminLojasCount');
+
+  const formAddVendedor = document.getElementById('formAddVendedor');
+  const novoVendedorNome = document.getElementById('novoVendedorNome');
+  const adminVendedoresList = document.getElementById('adminVendedoresList');
+  const adminVendedoresCount = document.getElementById('adminVendedoresCount');
+
+  const DB_LOJAS_KEY = 'ibv_lojas';
+  const DB_VENDEDORES_KEY = 'ibv_vendedores';
+
+  function getLojas() {
+    try {
+      const stored = localStorage.getItem(DB_LOJAS_KEY);
+      if (stored !== null) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.error('Erro ao ler lojas:', e);
+    }
+    const defaultLojas = ['Loja Centro', 'Loja Barão'];
+    localStorage.setItem(DB_LOJAS_KEY, JSON.stringify(defaultLojas));
+    return defaultLojas;
+  }
+
+  function saveLojas(lojas) {
+    try {
+      localStorage.setItem(DB_LOJAS_KEY, JSON.stringify(lojas));
+    } catch (e) {
+      console.error('Erro ao salvar lojas:', e);
+    }
+  }
+
+  function getVendedores() {
+    try {
+      const stored = localStorage.getItem(DB_VENDEDORES_KEY);
+      if (stored !== null) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.error('Erro ao ler vendedores:', e);
+    }
+    const defaultVendedores = ['Camila', 'Lucas'];
+    localStorage.setItem(DB_VENDEDORES_KEY, JSON.stringify(defaultVendedores));
+    return defaultVendedores;
+  }
+
+  function saveVendedores(vendedores) {
+    try {
+      localStorage.setItem(DB_VENDEDORES_KEY, JSON.stringify(vendedores));
+    } catch (e) {
+      console.error('Erro ao salvar vendedores:', e);
+    }
+  }
 
   // Credenciais Oficiais
   const ADMIN_USER = 'admin';
@@ -536,6 +598,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderLeadsTable() {
     if (!adminLeadsTbody) return;
     const leads = getLeads();
+    const lojas = getLojas();
+    const vendedores = getVendedores();
     updateKpis(leads);
 
     if (leads.length === 0) {
@@ -554,6 +618,30 @@ document.addEventListener('DOMContentLoaded', () => {
       const cleanPhone = (lead.telefone || '').replace(/\D/g, '');
       const waDirectUrl = `http://api.whatsapp.com/send?1=pt_BR&phone=55${cleanPhone}&text=${encodeURIComponent('Olá ' + lead.nome + ', tudo bem? Aqui é do Instituto Boa Visão de Campinas. Recebemos sua solicitação de consulta!')}`;
 
+      // Opções dinâmicas de Lojas
+      const lojaOptions = ['<option value="">Selecione...</option>'];
+      let matchedLoja = false;
+      lojas.forEach((l) => {
+        const isSel = (lead.loja || '').toLowerCase() === l.toLowerCase();
+        if (isSel) matchedLoja = true;
+        lojaOptions.push(`<option value="${escapeHtml(l)}" ${isSel ? 'selected' : ''}>${escapeHtml(l)}</option>`);
+      });
+      if (lead.loja && !matchedLoja) {
+        lojaOptions.push(`<option value="${escapeHtml(lead.loja)}" selected>${escapeHtml(lead.loja)}</option>`);
+      }
+
+      // Opções dinâmicas de Vendedores
+      const vendedorOptions = ['<option value="">Selecione...</option>'];
+      let matchedVendedor = false;
+      vendedores.forEach((v) => {
+        const isSel = (lead.vendedor || '').toLowerCase() === v.toLowerCase();
+        if (isSel) matchedVendedor = true;
+        vendedorOptions.push(`<option value="${escapeHtml(v)}" ${isSel ? 'selected' : ''}>${escapeHtml(v)}</option>`);
+      });
+      if (lead.vendedor && !matchedVendedor) {
+        vendedorOptions.push(`<option value="${escapeHtml(lead.vendedor)}" selected>${escapeHtml(lead.vendedor)}</option>`);
+      }
+
       return `
         <tr data-lead-id="${lead.id}">
           <td class="lead-date">${lead.dataHora || '—'}</td>
@@ -568,10 +656,18 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </td>
           <td><span class="lead-badge-channel ${channelClass}">${lead.formaContato || 'WhatsApp'}</span></td>
-          <td><input type="text" class="table-input field-loja" value="${escapeHtml(lead.loja || '')}" placeholder="Loja"></td>
+          <td>
+            <select class="table-select field-loja" title="Loja responsável">
+              ${lojaOptions.join('')}
+            </select>
+          </td>
           <td><input type="text" class="table-input field-os" value="${escapeHtml(lead.os || '')}" placeholder="OS"></td>
           <td><input type="text" class="table-input field-valor" value="${escapeHtml(lead.valor || '')}" placeholder="R$ 0,00"></td>
-          <td><input type="text" class="table-input field-vendedor" value="${escapeHtml(lead.vendedor || '')}" placeholder="Vendedor"></td>
+          <td>
+            <select class="table-select field-vendedor" title="Vendedor / Atendente">
+              ${vendedorOptions.join('')}
+            </select>
+          </td>
           <td>
             <select class="table-select field-status">
               <option value="Pendente" ${lead.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
@@ -771,27 +867,255 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Ouvintes de Alternador de Visão (Tabela vs Board)
-  if (tabTableView && tabBoardView) {
-    tabTableView.addEventListener('click', () => {
-      tabTableView.classList.add('is-active');
-      tabTableView.setAttribute('aria-selected', 'true');
-      tabBoardView.classList.remove('is-active');
-      tabBoardView.setAttribute('aria-selected', 'false');
-      if (adminTableViewSection) adminTableViewSection.style.display = 'flex';
-      if (adminBoardViewSection) adminBoardViewSection.style.display = 'none';
+  // ==========================================================================
+  // Gestão de Lojas e Vendedores (CRUD)
+  // ==========================================================================
+  function populateManualLeadDropdowns() {
+    if (manualLeadLoja) {
+      const currentLoja = manualLeadLoja.value;
+      const lojas = getLojas();
+      manualLeadLoja.innerHTML = '<option value="">Selecione a loja...</option>' +
+        lojas.map(l => `<option value="${escapeHtml(l)}">${escapeHtml(l)}</option>`).join('');
+      if (currentLoja && lojas.includes(currentLoja)) {
+        manualLeadLoja.value = currentLoja;
+      }
+    }
+    if (manualLeadVendedor) {
+      const currentVendedor = manualLeadVendedor.value;
+      const vendedores = getVendedores();
+      manualLeadVendedor.innerHTML = '<option value="">Selecione o vendedor...</option>' +
+        vendedores.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+      if (currentVendedor && vendedores.includes(currentVendedor)) {
+        manualLeadVendedor.value = currentVendedor;
+      }
+    }
+  }
+
+  function renderLojasList() {
+    if (!adminLojasList) return;
+    const lojas = getLojas();
+    if (adminLojasCount) {
+      adminLojasCount.textContent = lojas.length === 1 ? '1 loja cadastrada' : `${lojas.length} lojas cadastradas`;
+    }
+    if (lojas.length === 0) {
+      adminLojasList.innerHTML = '<li class="admin-cadastro-empty">Nenhuma loja cadastrada.</li>';
+      return;
+    }
+    adminLojasList.innerHTML = lojas.map((loja, idx) => `
+      <li class="admin-cadastro-item" data-index="${idx}">
+        <div class="admin-cadastro-name-wrap">
+          <span class="admin-cadastro-dot"></span>
+          <span class="admin-cadastro-name">${escapeHtml(loja)}</span>
+        </div>
+        <div class="admin-cadastro-item-actions">
+          <button type="button" class="btn-item-edit" data-action="edit-loja" data-index="${idx}" title="Alterar nome da loja">Editar</button>
+          <button type="button" class="btn-item-delete" data-action="delete-loja" data-index="${idx}" title="Excluir loja">✕</button>
+        </div>
+      </li>
+    `).join('');
+  }
+
+  function renderVendedoresList() {
+    if (!adminVendedoresList) return;
+    const vendedores = getVendedores();
+    if (adminVendedoresCount) {
+      adminVendedoresCount.textContent = vendedores.length === 1 ? '1 vendedor cadastrado' : `${vendedores.length} vendedores cadastrados`;
+    }
+    if (vendedores.length === 0) {
+      adminVendedoresList.innerHTML = '<li class="admin-cadastro-empty">Nenhum vendedor cadastrado.</li>';
+      return;
+    }
+    adminVendedoresList.innerHTML = vendedores.map((vendedor, idx) => `
+      <li class="admin-cadastro-item" data-index="${idx}">
+        <div class="admin-cadastro-name-wrap">
+          <span class="admin-cadastro-dot"></span>
+          <span class="admin-cadastro-name">${escapeHtml(vendedor)}</span>
+        </div>
+        <div class="admin-cadastro-item-actions">
+          <button type="button" class="btn-item-edit" data-action="edit-vendedor" data-index="${idx}" title="Alterar nome do vendedor">Editar</button>
+          <button type="button" class="btn-item-delete" data-action="delete-vendedor" data-index="${idx}" title="Excluir vendedor">✕</button>
+        </div>
+      </li>
+    `).join('');
+  }
+
+  // Ouvintes de Cadastro de Loja
+  if (formAddLoja) {
+    formAddLoja.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = (novaLojaNome ? novaLojaNome.value : '').trim();
+      if (!nome) return;
+      const lojas = getLojas();
+      if (lojas.some(l => l.toLowerCase() === nome.toLowerCase())) {
+        alert(`A loja "${nome}" já está cadastrada.`);
+        return;
+      }
+      lojas.push(nome);
+      saveLojas(lojas);
+      if (novaLojaNome) novaLojaNome.value = '';
+      renderLojasList();
+      populateManualLeadDropdowns();
       renderLeadsTable();
     });
+  }
 
-    tabBoardView.addEventListener('click', () => {
-      tabBoardView.classList.add('is-active');
-      tabBoardView.setAttribute('aria-selected', 'true');
-      tabTableView.classList.remove('is-active');
-      tabTableView.setAttribute('aria-selected', 'false');
-      if (adminTableViewSection) adminTableViewSection.style.display = 'none';
-      if (adminBoardViewSection) adminBoardViewSection.style.display = 'flex';
-      renderKanbanBoard();
+  if (adminLojasList) {
+    adminLojasList.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('button[data-action="edit-loja"]');
+      const delBtn = e.target.closest('button[data-action="delete-loja"]');
+      const lojas = getLojas();
+
+      if (editBtn) {
+        const idx = parseInt(editBtn.getAttribute('data-index'), 10);
+        if (isNaN(idx) || idx < 0 || idx >= lojas.length) return;
+        const antigoNome = lojas[idx];
+        const novoNome = prompt('Editar nome da loja / unidade:', antigoNome);
+        if (novoNome !== null) {
+          const clean = novoNome.trim();
+          if (clean && clean !== antigoNome) {
+            lojas[idx] = clean;
+            saveLojas(lojas);
+
+            // Atualiza leads associados
+            const leads = getLeads();
+            let updated = false;
+            leads.forEach(l => {
+              if (l.loja === antigoNome) {
+                l.loja = clean;
+                updated = true;
+              }
+            });
+            if (updated) saveLeads(leads);
+
+            renderLojasList();
+            populateManualLeadDropdowns();
+            renderLeadsTable();
+            renderKanbanBoard();
+          }
+        }
+      }
+
+      if (delBtn) {
+        const idx = parseInt(delBtn.getAttribute('data-index'), 10);
+        if (isNaN(idx) || idx < 0 || idx >= lojas.length) return;
+        const nomeLoja = lojas[idx];
+        if (confirm(`Tem certeza que deseja excluir a loja "${nomeLoja}"?`)) {
+          lojas.splice(idx, 1);
+          saveLojas(lojas);
+          renderLojasList();
+          populateManualLeadDropdowns();
+          renderLeadsTable();
+        }
+      }
     });
+  }
+
+  // Ouvintes de Cadastro de Vendedor
+  if (formAddVendedor) {
+    formAddVendedor.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = (novoVendedorNome ? novoVendedorNome.value : '').trim();
+      if (!nome) return;
+      const vendedores = getVendedores();
+      if (vendedores.some(v => v.toLowerCase() === nome.toLowerCase())) {
+        alert(`O vendedor "${nome}" já está cadastrado.`);
+        return;
+      }
+      vendedores.push(nome);
+      saveVendedores(vendedores);
+      if (novoVendedorNome) novoVendedorNome.value = '';
+      renderVendedoresList();
+      populateManualLeadDropdowns();
+      renderLeadsTable();
+    });
+  }
+
+  if (adminVendedoresList) {
+    adminVendedoresList.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('button[data-action="edit-vendedor"]');
+      const delBtn = e.target.closest('button[data-action="delete-vendedor"]');
+      const vendedores = getVendedores();
+
+      if (editBtn) {
+        const idx = parseInt(editBtn.getAttribute('data-index'), 10);
+        if (isNaN(idx) || idx < 0 || idx >= vendedores.length) return;
+        const antigoNome = vendedores[idx];
+        const novoNome = prompt('Editar nome do vendedor / atendente:', antigoNome);
+        if (novoNome !== null) {
+          const clean = novoNome.trim();
+          if (clean && clean !== antigoNome) {
+            vendedores[idx] = clean;
+            saveVendedores(vendedores);
+
+            // Atualiza leads associados
+            const leads = getLeads();
+            let updated = false;
+            leads.forEach(l => {
+              if (l.vendedor === antigoNome) {
+                l.vendedor = clean;
+                updated = true;
+              }
+            });
+            if (updated) saveLeads(leads);
+
+            renderVendedoresList();
+            populateManualLeadDropdowns();
+            renderLeadsTable();
+            renderKanbanBoard();
+          }
+        }
+      }
+
+      if (delBtn) {
+        const idx = parseInt(delBtn.getAttribute('data-index'), 10);
+        if (isNaN(idx) || idx < 0 || idx >= vendedores.length) return;
+        const nomeVendedor = vendedores[idx];
+        if (confirm(`Tem certeza que deseja excluir o vendedor "${nomeVendedor}"?`)) {
+          vendedores.splice(idx, 1);
+          saveVendedores(vendedores);
+          renderVendedoresList();
+          populateManualLeadDropdowns();
+          renderLeadsTable();
+        }
+      }
+    });
+  }
+
+  // Ouvintes de Alternador de Visão (Tabela vs Board vs Cadastros)
+  function switchAdminTab(viewName) {
+    if (tabTableView) {
+      tabTableView.classList.toggle('is-active', viewName === 'tabela');
+      tabTableView.setAttribute('aria-selected', viewName === 'tabela' ? 'true' : 'false');
+    }
+    if (tabBoardView) {
+      tabBoardView.classList.toggle('is-active', viewName === 'board');
+      tabBoardView.setAttribute('aria-selected', viewName === 'board' ? 'true' : 'false');
+    }
+    if (tabCadastrosView) {
+      tabCadastrosView.classList.toggle('is-active', viewName === 'cadastros');
+      tabCadastrosView.setAttribute('aria-selected', viewName === 'cadastros' ? 'true' : 'false');
+    }
+
+    if (adminTableViewSection) adminTableViewSection.style.display = viewName === 'tabela' ? 'flex' : 'none';
+    if (adminBoardViewSection) adminBoardViewSection.style.display = viewName === 'board' ? 'flex' : 'none';
+    if (adminCadastrosViewSection) adminCadastrosViewSection.style.display = viewName === 'cadastros' ? 'block' : 'none';
+
+    if (viewName === 'tabela') renderLeadsTable();
+    if (viewName === 'board') renderKanbanBoard();
+    if (viewName === 'cadastros') {
+      renderLojasList();
+      renderVendedoresList();
+    }
+  }
+
+  if (tabTableView) {
+    tabTableView.addEventListener('click', () => switchAdminTab('tabela'));
+  }
+  if (tabBoardView) {
+    tabBoardView.addEventListener('click', () => switchAdminTab('board'));
+  }
+  if (tabCadastrosView) {
+    tabCadastrosView.addEventListener('click', () => switchAdminTab('cadastros'));
   }
 
   // Abrir / Fechar Modal
@@ -966,6 +1290,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Preenche valores padrão alinhados com o usuário
     if (manualLeadStatus) manualLeadStatus.value = 'Agendado';
     if (manualLeadCanal) manualLeadCanal.value = 'WhatsApp';
+
+    // Popula dropdowns com lojas e vendedores cadastrados
+    populateManualLeadDropdowns();
 
     adminAddLeadModal.classList.add('is-open');
     adminAddLeadModal.setAttribute('aria-hidden', 'false');

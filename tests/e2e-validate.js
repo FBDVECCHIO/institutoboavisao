@@ -286,6 +286,9 @@ if (fs.existsSync(INDEX_PATH)) {
   assert(html.includes('id="adminAddLeadBtn"'), 'Admin deve possuir botão para inclusão manual de lead (#adminAddLeadBtn)');
   assert(html.includes('id="adminAddLeadModal"'), 'Admin deve possuir modal para cadastro manual de lead (#adminAddLeadModal)');
   assert(html.includes('id="adminAddLeadForm"'), 'Admin deve possuir formulário para cadastro manual de lead (#adminAddLeadForm)');
+  assert(html.includes('id="tabCadastrosView"'), 'Admin deve possuir aba para Lojas e Vendedores (#tabCadastrosView)');
+  assert(html.includes('id="adminCadastrosViewSection"'), 'Admin deve possuir seção para gestão de Lojas e Vendedores (#adminCadastrosViewSection)');
+  assert(html.includes('id="formAddLoja"') && html.includes('id="formAddVendedor"'), 'Admin deve possuir formulários de cadastro de lojas e vendedores');
 }
 
 // -----------------------------------------------------------------
@@ -303,6 +306,7 @@ if (fs.existsSync(CSS_PATH)) {
   assert(css.includes('.field-data-consulta'), 'CSS deve estilizar o campo de data de consulta (.field-data-consulta)');
   assert(css.includes('.admin-board-container') && css.includes('.kanban-column'), 'CSS deve conter estilos para o Board Kanban de leads');
   assert(css.includes('.admin-submodal') && css.includes('.admin-add-lead-btn'), 'CSS deve conter estilos para o botão e modal de inclusão manual de leads');
+  assert(css.includes('.admin-cadastros-grid') && css.includes('.admin-cadastro-card'), 'CSS deve conter estilos para a tela de cadastros de lojas e vendedores');
 }
 
 if (fs.existsSync(JS_PATH)) {
@@ -313,8 +317,10 @@ if (fs.existsSync(JS_PATH)) {
   assert(js.includes('dataConsulta'), 'JS deve gerenciar o campo dataConsulta nos leads');
   assert(js.includes('renderKanbanBoard'), 'JS deve conter função renderKanbanBoard para organizar cards por status');
   assert(js.includes('tabBoardView'), 'JS deve conter alternador de visão para o Board Kanban');
+  assert(js.includes('tabCadastrosView'), 'JS deve conter alternador de visão para Lojas e Vendedores');
   assert(js.includes('adminAddLeadBtn') && js.includes('adminAddLeadModal'), 'JS deve controlar abertura e fechamento da inclusão manual de leads');
   assert(js.includes('adminAddLeadForm'), 'JS deve processar o formulário de cadastro manual de leads');
+  assert(js.includes('getLojas') && js.includes('getVendedores'), 'JS deve gerenciar o cadastro dinâmico de lojas e vendedores');
 }
 
 // -----------------------------------------------------------------

@@ -4713,4 +4713,211 @@ footer.site-footer {
   }
 }
 
+/* ==========================================================================
+   Gestão de Lojas e Vendedores (Cadastros)
+   ========================================================================== */
+.admin-cadastros-container {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  max-height: calc(100vh - 140px);
+}
+
+.admin-cadastros-header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.85rem;
+}
+
+.admin-cadastros-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.admin-cadastros-desc {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin: 0.25rem 0 0 0;
+}
+
+.admin-cadastros-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.admin-cadastro-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-cadastro-card-header {
+  padding: 1rem 1.25rem;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-cadastro-card-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-cadastro-badge-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.admin-cadastro-card-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.admin-cadastro-card-count {
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+}
+
+.admin-cadastro-add-form {
+  padding: 1rem 1.25rem;
+  background: #FAFAFA;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.admin-cadastro-add-form .admin-form-input {
+  flex: 1;
+}
+
+.admin-cadastro-list-wrap {
+  padding: 0.75rem 1.25rem;
+  min-height: 180px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.admin-cadastro-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-cadastro-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  gap: 0.75rem;
+}
+
+.admin-cadastro-item:hover {
+  border-color: rgba(25, 67, 31, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.admin-cadastro-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-cadastro-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.admin-cadastro-name {
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+.admin-cadastro-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.btn-item-edit {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid rgba(25, 67, 31, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-item-edit:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.btn-item-delete {
+  background: transparent;
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-item-delete:hover {
+  background: #DC2626;
+  color: #FFFFFF;
+}
+
+.admin-cadastro-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .admin-cadastros-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+
 
